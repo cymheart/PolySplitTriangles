@@ -52,6 +52,35 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="GeometryAlgorithm\GeometryAlgorithm.cs" />
+    <Compile Include="GeometryAlgorithm\GeometryAlgorithm2D.cs" />
+    <Compile Include="GeometryAlgorithm\GeometryAlgorithmTypes.cs" />
+    <Compile Include="GeometryAlgorithm\Mathd\Vector2d.cs" />
+    <Compile Include="GeometryAlgorithm\Mathd\Vector3d.cs" />
+    <Compile Include="GeometryAlgorithm\Poly.cs" />
+    <Compile Include="GeometryAlgorithm\PolyBoolean.cs" />
+    <Compile Include="GeometryAlgorithm\PolySplitTriangles.cs" />
+    <Compile Include="GeometryAlgorithm\VoxBox.cs" />
+    <Compile Include="GeometryAlgorithm\VoxHeightFieldInfo.cs" />
+    <Compile Include="GeometryAlgorithm\VoxSpace.cs" />
+    <Compile Include="GeometryAlgorithm\VoxTriFace.cs" />
+    <Compile Include="GeometryAlgorithm\VoxViewer.cs" />
+    <Compile Include="LinearAlgebra\Complex.cs" />
+    <Compile Include="LinearAlgebra\LinearEquations\ConjugateGradient.cs" />
+    <Compile Include="LinearAlgebra\LinearEquations\GaussElimination.cs" />
+    <Compile Include="LinearAlgebra\LinearEquations\LinearLeastSquares.cs" />
+    <Compile Include="LinearAlgebra\MatrixAlgebra\Matrix.cs" />
+    <Compile Include="LinearAlgebra\MatrixAlgebra\MatrixComputation.cs" />
+    <Compile Include="LinearAlgebra\MatrixAlgebra\MatrixDecomposition.cs" />
+    <Compile Include="LinearAlgebra\MatrixAlgebra\MatrixIO.cs" />
+    <Compile Include="LinearAlgebra\MatrixAlgebra\MatrixScalar.cs" />
+    <Compile Include="LinearAlgebra\MatrixAlgebra\MatrixSubset.cs" />
+    <Compile Include="LinearAlgebra\MatrixAlgebra\OutputResult.cs" />
+    <Compile Include="LinearAlgebra\MatrixAlgebra\SpecialMatrices.cs" />
+    <Compile Include="LinearAlgebra\MatrixAlgebra\Utility.cs" />
+    <Compile Include="LinearAlgebra\VectorAlgebra\Vector.cs" />
+    <Compile Include="LinearAlgebra\VectorAlgebra\VectorComputation.cs" />
+    <Compile Include="LinearAlgebra\VectorAlgebra\VectorMatrixComputation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

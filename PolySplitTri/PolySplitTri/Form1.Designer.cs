@@ -94,6 +94,7 @@
             this.btnSplit.TabIndex = 1;
             this.btnSplit.Text = "分割为三角形";
             this.btnSplit.UseVisualStyleBackColor = true;
+            this.btnSplit.Click += new System.EventHandler(this.btnSplit_Click);
             // 
             // Form1
             // 

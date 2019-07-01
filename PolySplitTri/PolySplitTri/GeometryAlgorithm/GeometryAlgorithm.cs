@@ -554,7 +554,7 @@ namespace Geometry_Algorithm
         /// <param name="polyVertexsList"></param>
         /// <param name="faceNormal"></param>
         /// <returns></returns>
-        public Poly CreatePoly(Vector3d[] polyVertexs, Vector3d faceNormal)
+        public Poly CreatePoly(Vector3d[] polyVertexs, Vector3d? faceNormal = null)
         {
             return CreatePoly(new List<Vector3d[]> { polyVertexs }, faceNormal);
         }
@@ -564,12 +564,12 @@ namespace Geometry_Algorithm
         /// </summary>
         /// <param name="vertexs"></param>
         /// <returns></returns>
-        public Poly CreatePoly(List<Vector3d[]> polyVertexsList, Vector3d faceNormal)
+        public Poly CreatePoly(List<Vector3d[]> polyVertexsList, Vector3d? faceNormal)
         {
             Poly poly = new Poly();
             poly.vertexsList = polyVertexsList;
   
-            if (IsZero(faceNormal))
+            if (faceNormal == null)
             {
                 Vector3d[] polyVertexs = polyVertexsList[0];
                 Vector3d vec1 = polyVertexs[1] - polyVertexs[0];
@@ -579,7 +579,7 @@ namespace Geometry_Algorithm
             }
             else
             {
-                poly.faceNormal = faceNormal;
+                poly.faceNormal = faceNormal.Value;
             }
 
             poly.sidesList = CreatePolySidesList(poly.vertexsList, poly.faceNormal);

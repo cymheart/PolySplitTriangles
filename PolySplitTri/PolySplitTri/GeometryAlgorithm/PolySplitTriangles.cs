@@ -28,7 +28,7 @@ namespace Geometry_Algorithm
             LinkedList<LinkedListNode<Vector3d>[]> legalTriNodeList = new LinkedList<LinkedListNode<Vector3d>[]>();
 
 
-            while (polyVertList.Count > 0)
+            while (polyVertList.Count > 2)
             {
                 for (var node = polyVertList.First; node != null; node = node.Next)
                 {

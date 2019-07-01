@@ -1,4 +1,5 @@
 ﻿using Geometry_Algorithm;
+using Mathd;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,8 +24,8 @@ namespace PolySplitTri
         int opMode = 0;
 
         List<Point> ptList = new List<Point>();
-
         Point movePoint = new Point(0,0);
+        List<Vector3d[]> tris = null;
 
         public Form1()
         {
@@ -32,10 +33,6 @@ namespace PolySplitTri
             polySplitTris = new PolySplitTriangles(geoAlgor);
 
             this.DoubleBuffered = true;
-
-            //  geoAlgor.CreatePoly2D()
-
-            // polySplitTris.Split()
 
         }
 
@@ -129,6 +126,21 @@ namespace PolySplitTri
             }
 
 
+            if(tris != null)
+            {
+                Point[] pts = new Point[3];
+                for(int i=0; i<tris.Count; i++)
+                {
+                    for(int j=0; j<tris[i].Length; j++)
+                        pts[j] = new Point((int)tris[i][j].x, (int)tris[i][j].z);
+
+                    Color color = CreateRandomColor();
+                    Brush brush = new SolidBrush(color);
+                    g.FillPolygon(brush, pts);
+                }
+            }
+
+
         }
 
         int InRegionIdx(Point pt)
@@ -160,15 +172,40 @@ namespace PolySplitTri
             return pt;
         }
 
+        Color CreateRandomColor()
+        {
+            int R = new Random().Next(255);
+            int G = new Random().Next(255);
+            int B = new Random().Next(255);
+            B = (R + G > 400) ? R + G - 400 : B;//0 : 380 - R - G;
+            B = (B > 255) ? 255 : B;
+
+            return Color.FromArgb(R, G, B);
+        }
+
         private void btnClear_Click(object sender, EventArgs e)
         {
             ptList.Clear();
-            canvas.Refresh();
             state = 0;
             opMode = 0;
+            tris = null;
+            canvas.Refresh();
         }
 
-       
+        private void btnSplit_Click(object sender, EventArgs e)
+        {
+            List<Vector3d> vertList = new List<Vector3d>();
+
+            for(int i=0; i<ptList.Count; i++)
+            {
+                Vector3d vert = new Vector3d(ptList[i].X, 0, ptList[i].Y);
+                vertList.Add(vert);
+            }
+
+            Poly poly = geoAlgor.CreatePoly(vertList.ToArray());
+            tris = polySplitTris.Split(poly);
+            canvas.Refresh();
+        }
     }
 
 

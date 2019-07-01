@@ -16,6 +16,16 @@ namespace Geometry_Algorithm
             return v1.x * v2.x + v1.z * v2.z;
         }
 
+        /// <summary>
+        /// 生成2D多边形(平面为xz平面)
+        /// </summary>
+        /// <param name="polyVertexsList"></param>
+        /// <param name="faceNormal"></param>
+        /// <returns></returns>
+        public Poly CreatePoly2D(Vector3d[] polyVertexs)
+        {
+            return CreatePoly(new List<Vector3d[]> { polyVertexs }, Vector3d.up);
+        }
 
 
         public bool IsInsidePoly2D(Poly poly, Vector3d pt, PloySideType checkSideType = PloySideType.Allside)

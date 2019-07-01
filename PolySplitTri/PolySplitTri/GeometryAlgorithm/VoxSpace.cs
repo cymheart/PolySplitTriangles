@@ -1,10 +1,6 @@
 ﻿using LinearAlgebra;
 using Mathd;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
 
 namespace Geometry_Algorithm
 {

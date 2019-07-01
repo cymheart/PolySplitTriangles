@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -64,7 +65,6 @@
     <Compile Include="GeometryAlgorithm\VoxHeightFieldInfo.cs" />
     <Compile Include="GeometryAlgorithm\VoxSpace.cs" />
     <Compile Include="GeometryAlgorithm\VoxTriFace.cs" />
-    <Compile Include="GeometryAlgorithm\VoxViewer.cs" />
     <Compile Include="LinearAlgebra\Complex.cs" />
     <Compile Include="LinearAlgebra\LinearEquations\ConjugateGradient.cs" />
     <Compile Include="LinearAlgebra\LinearEquations\GaussElimination.cs" />
@@ -83,6 +83,9 @@
     <Compile Include="LinearAlgebra\VectorAlgebra\VectorMatrixComputation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

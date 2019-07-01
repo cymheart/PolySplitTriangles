@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Mathd;
 
 namespace Geometry_Algorithm
@@ -81,9 +82,11 @@ namespace Geometry_Algorithm
             Vector3d dir1 = poly.sidesList[0][0].dir;
             Vector3d dir2 = poly.sidesList[0][1].dir;
             Vector3d dir3 = poly.sidesList[0][2].dir;
-            float scale1 = UnityEngine.Random.Range(0.0006f, 0.001f);
-            float scale2 = UnityEngine.Random.Range(0.0006f, 0.001f);
-            float scale3 = UnityEngine.Random.Range(0.0006f, 0.001f);
+
+            Random ran = new Random();
+            float scale1 = ((float)ran.Next(60, 100))/100000;
+            float scale2 = ((float)ran.Next(60, 100)) / 100000;
+            float scale3 = ((float)ran.Next(60, 100)) / 100000;
             offsetValue = dir1 * scale1 + dir2* scale2 + dir3 * scale3;
 
             List<PolySide[]> sidesList = poly.sidesList;

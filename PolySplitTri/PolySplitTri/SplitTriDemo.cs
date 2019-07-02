@@ -256,6 +256,4 @@ namespace PolySplitTri
             }
         }
     }
-
-
 }

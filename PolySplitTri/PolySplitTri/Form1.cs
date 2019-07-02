@@ -26,6 +26,7 @@ namespace PolySplitTri
         List<Point> ptList = new List<Point>();
         Point movePoint = new Point(0,0);
         List<Vector3d[]> tris = null;
+        List<Color> trisFillColor = new List<Color>();
 
         public Form1()
         {
@@ -88,6 +89,19 @@ namespace PolySplitTri
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             g.Clear(Color.White);
 
+            if (tris != null)
+            {
+                Point[] pts = new Point[3];
+                for (int i = 0; i < tris.Count; i++)
+                {
+                    for (int j = 0; j < tris[i].Length; j++)
+                        pts[j] = new Point((int)tris[i][j].x, (int)tris[i][j].z);
+
+                    Brush brush = new SolidBrush(trisFillColor[i]);
+                    g.FillPolygon(brush, pts);
+                }
+            }
+
             Point pt;
             for(int i=0; i<ptList.Count; i++)
             {
@@ -126,21 +140,7 @@ namespace PolySplitTri
             }
 
 
-            if(tris != null)
-            {
-                Point[] pts = new Point[3];
-                for(int i=0; i<tris.Count; i++)
-                {
-                    for(int j=0; j<tris[i].Length; j++)
-                        pts[j] = new Point((int)tris[i][j].x, (int)tris[i][j].z);
-
-                    Color color = CreateRandomColor();
-                    Brush brush = new SolidBrush(color);
-                    g.FillPolygon(brush, pts);
-                }
-            }
-
-
+            
         }
 
         int InRegionIdx(Point pt)
@@ -174,9 +174,15 @@ namespace PolySplitTri
 
         Color CreateRandomColor()
         {
-            int R = new Random().Next(255);
-            int G = new Random().Next(255);
-            int B = new Random().Next(255);
+            Random rd = new Random(Guid.NewGuid().GetHashCode());
+            int R = rd.Next(255);
+
+            rd = new Random(Guid.NewGuid().GetHashCode());
+            int G = rd.Next(255);
+
+            rd = new Random(Guid.NewGuid().GetHashCode());
+            int B = rd.Next(255);
+
             B = (R + G > 400) ? R + G - 400 : B;//0 : 380 - R - G;
             B = (B > 255) ? 255 : B;
 
@@ -202,8 +208,17 @@ namespace PolySplitTri
                 vertList.Add(vert);
             }
 
-            Poly poly = geoAlgor.CreatePoly(vertList.ToArray());
+            trisFillColor.Clear();
+
+            Poly poly = geoAlgor.CreatePoly(vertList.ToArray(), Vector3d.down);
             tris = polySplitTris.Split(poly);
+           
+            for(int i=0; i<tris.Count; i++)
+            {
+                Color color = CreateRandomColor();
+                trisFillColor.Add(color);
+            }
+
             canvas.Refresh();
         }
     }

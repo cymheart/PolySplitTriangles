@@ -83,11 +83,9 @@ namespace Geometry_Algorithm
             Vector3d dir2 = poly.sidesList[0][1].dir;
             Vector3d dir3 = poly.sidesList[0][2].dir;
 
-            Random ran = new Random();
-            float scale1 = ((float)ran.Next(60, 100))/100000;
-            float scale2 = ((float)ran.Next(60, 100)) / 100000;
-            float scale3 = ((float)ran.Next(60, 100)) / 100000;
-            offsetValue = dir1 * scale1 + dir2* scale2 + dir3 * scale3;
+            float[] scales = CreateRandomScales();
+
+            offsetValue = dir1 * scales[0] + dir2* scales[1] + dir3 * scales[2];
 
             List<PolySide[]> sidesList = poly.sidesList;
 
@@ -99,6 +97,21 @@ namespace Geometry_Algorithm
                     sides[j].startpos += offsetValue;
                 }
             }
+        }
+
+        float[] CreateRandomScales()
+        {
+            Random rd = new Random(Guid.NewGuid().GetHashCode());
+            float scale1 = rd.Next(60, 100)/100000;
+
+            rd = new Random(Guid.NewGuid().GetHashCode());
+            float scale2 = rd.Next(60, 100) / 100000;
+
+            rd = new Random(Guid.NewGuid().GetHashCode());
+            float scale3 = rd.Next(60, 100) / 100000;
+
+            return new float[] { scale1, scale2, scale3 };
+
         }
 
         void RestorePolyPos(Poly poly)

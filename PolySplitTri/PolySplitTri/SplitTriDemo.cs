@@ -110,19 +110,14 @@ namespace PolySplitTri
             }
 
             Point pt;
-            for(int i=0; i<ptList.Count; i++)
+            for(int i=1; i<ptList.Count; i++)
             {
                 pt = ptList[i];
-                int w = 10, h = 10;
-                int x = pt.X - w / 2;
-                int y = pt.Y - h / 2;
-                Rectangle rect = new Rectangle(x, y, w, h);
-                g.FillEllipse(Brushes.Red, rect);
-
-                if(i > 0)
-                    g.DrawLine(Pens.DarkBlue, pt, ptList[i - 1]);
+                g.DrawLine(Pens.DarkBlue, pt, ptList[i - 1]);
             }
 
+
+            //
             switch(state)
             {
                 case 0:
@@ -147,7 +142,19 @@ namespace PolySplitTri
             }
 
 
-            
+            //
+            for (int i = 0; i < ptList.Count; i++)
+            {
+                pt = ptList[i];
+                int w = 10, h = 10;
+                int x = pt.X - w / 2;
+                int y = pt.Y - h / 2;
+                Rectangle rect = new Rectangle(x, y, w, h);
+                g.FillEllipse(Brushes.Red, rect);
+            }
+
+
+
         }
 
         int InRegionIdx(Point pt)

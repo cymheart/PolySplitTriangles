@@ -13,7 +13,7 @@ using System.Windows.Forms;
 namespace PolySplitTri
 {
 
-    public partial class Form1 : Form
+    public partial class SplitTriDemo : Form
     {
         PolySplitTriangles polySplitTris;
         GeometryAlgorithm geoAlgor = new GeometryAlgorithm();
@@ -28,7 +28,7 @@ namespace PolySplitTri
         List<Vector3d[]> tris = null;
         List<Color> trisFillColor = new List<Color>();
 
-        public Form1()
+        public SplitTriDemo()
         {
             InitializeComponent();
             polySplitTris = new PolySplitTriangles(geoAlgor);
@@ -64,7 +64,10 @@ namespace PolySplitTri
 
         private void canvas_MouseUp(object sender, MouseEventArgs e)
         {
-            opMode = 0;
+            if (opMode == 1)
+                opMode = 2;
+            else
+                opMode = 0;
         }
 
         private void canvas_MouseMove(object sender, MouseEventArgs e)
@@ -72,13 +75,13 @@ namespace PolySplitTri
             if (opMode == 0)
             {
                 movePoint = GetMousePos();
+                canvas.Refresh();
             }
             else if(opMode == 1)
             {
                 ptList[inPointIdx] = GetMousePos();
+                canvas.Refresh();
             }
-
-            canvas.Refresh();
         }
 
 
@@ -210,7 +213,23 @@ namespace PolySplitTri
 
             trisFillColor.Clear();
 
-            Poly poly = geoAlgor.CreatePoly(vertList.ToArray(), Vector3d.down);
+            Poly poly = null;
+            double val = geoAlgor.TestClockWise2D(vertList.ToArray());
+            if (val < 0)
+            {
+                Vector3d[] tmpVerts = new Vector3d[vertList.Count];
+                int j = 0;
+                for (int i = vertList.Count - 1; i >= 0; i--)
+                    tmpVerts[j++] = vertList[i];
+
+                poly = geoAlgor.CreatePoly(tmpVerts, Vector3d.down);
+
+            }
+            else
+            {
+                poly = geoAlgor.CreatePoly(vertList.ToArray(), Vector3d.down);
+            }
+
             tris = polySplitTris.Split(poly);
            
             for(int i=0; i<tris.Count; i++)
@@ -218,6 +237,7 @@ namespace PolySplitTri
                 Color color = CreateRandomColor();
                 trisFillColor.Add(color);
             }
+
 
             canvas.Refresh();
         }

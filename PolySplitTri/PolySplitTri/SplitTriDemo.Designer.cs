@@ -1,6 +1,6 @@
 ﻿namespace PolySplitTri
 {
-    partial class Form1
+    partial class SplitTriDemo
     {
         /// <summary>
         /// 必需的设计器变量。
@@ -105,7 +105,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.DoubleBuffered = true;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "多边形分割三角面";
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);

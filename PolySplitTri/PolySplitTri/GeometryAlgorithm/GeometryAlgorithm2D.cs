@@ -189,5 +189,47 @@ namespace Geometry_Algorithm
             pt = p + t * n;
             return true;
         }
+
+
+        public double TestClockWise2D(Vector3d[] verts)
+        {
+            double xMax = verts[0].x;
+            int idx = 0;
+            int prevIdx, nextIdx;
+            
+
+            for(int i = 1; i < verts.Length; i++)
+            {
+                if (verts[i].x >= xMax)
+                {
+                    xMax = verts[i].x;
+                    idx = i;
+                }
+            }
+
+
+            if(idx == verts.Length - 1)
+            {
+                prevIdx = idx - 1;
+                nextIdx = 0;
+            }
+            else if(idx == 0)
+            {
+                prevIdx = verts.Length - 1;
+                nextIdx = idx + 1;
+            }
+            else
+            {
+                prevIdx = idx - 1;
+                nextIdx = idx + 1;
+            }
+
+
+            Vector3d v1 = verts[idx] - verts[prevIdx];
+            Vector3d v2 = verts[nextIdx] - verts[idx];
+
+            double m = Cross2D(v1, v2);
+            return m;
+        }
     }
 }

@@ -6,7 +6,10 @@ namespace Geometry_Algorithm
     public class PolySplitTriangles
     {
         GeometryAlgorithm geoAlgor;
-        
+
+        //合法的三角形分割列表
+        LinkedList<LinkedListNode<Vector3d>[]> legalTriNodeList = new LinkedList<LinkedListNode<Vector3d>[]>();
+
         public PolySplitTriangles(GeometryAlgorithm geoAlgor)
         {
             this.geoAlgor = geoAlgor;
@@ -20,13 +23,13 @@ namespace Geometry_Algorithm
 
         public List<Vector3d[]> Split(LinkedList<Vector3d> polyVertList, Vector3d polyFaceNormal)
         {
+            if (polyVertList == null)
+                return null;
+
             Vector3d dir;
             LinkedListNode<Vector3d>[] abc;
             List<Vector3d[]> triVertexList = new List<Vector3d[]>();
-
-            //合法的三角形分割列表
-            LinkedList<LinkedListNode<Vector3d>[]> legalTriNodeList = new LinkedList<LinkedListNode<Vector3d>[]>();
-
+            legalTriNodeList.Clear();
 
             while (polyVertList.Count > 2)
             {
@@ -79,6 +82,10 @@ namespace Geometry_Algorithm
                     vertexs[2] = nodes[2].Value;
                     triVertexList.Add(vertexs);
                 }
+                else
+                {
+                    break;
+                }
 
                 legalTriNodeList.Clear();
             }
@@ -109,6 +116,9 @@ namespace Geometry_Algorithm
 
         LinkedList<Vector3d> CreatePolyVertToList(Poly poly)
         {
+            if (poly == null)
+                return null;
+
             LinkedList<Vector3d> polyVertList = new LinkedList<Vector3d>();
 
             Vector3d[] triPts = poly.vertexsList[0];
@@ -149,7 +159,20 @@ namespace Geometry_Algorithm
             return triNodes;
         }
 
-
+        
+        /// <summary>     
+            /// 判断点是否在三角形内部的方法如下：
+            ///如果D在三角形ABC内部，则D与C在直线AB的同一侧，D与B在直线AC的同一侧，D与A在直线BC的同一侧。
+            ///同时满足这三个条件，则可测试出点D在三角形ABC内部。
+        /// </summary>
+        /// <param name="pt"></param>
+        /// <param name="triPtA"></param>
+        /// <param name="triPtB"></param>
+        /// <param name="triPtC"></param>
+        /// <param name="aCross"></param>
+        /// <param name="bCross"></param>
+        /// <param name="cCross"></param>
+        /// <returns></returns>
         bool TestPointInTri(Vector3d pt, 
             Vector3d triPtA, Vector3d triPtB, Vector3d triPtC,
             Vector3d aCross, Vector3d bCross, Vector3d cCross)

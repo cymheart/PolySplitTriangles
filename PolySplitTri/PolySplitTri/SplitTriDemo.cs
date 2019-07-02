@@ -80,6 +80,10 @@ namespace PolySplitTri
             else if(opMode == 1)
             {
                 ptList[inPointIdx] = GetMousePos();
+
+                if(tris != null)
+                    CreateSplitTris();
+
                 canvas.Refresh();
             }
         }
@@ -203,9 +207,15 @@ namespace PolySplitTri
 
         private void btnSplit_Click(object sender, EventArgs e)
         {
+            CreateSplitTris();
+            canvas.Refresh();
+        }
+
+        void CreateSplitTris()
+        {
             List<Vector3d> vertList = new List<Vector3d>();
 
-            for(int i=0; i<ptList.Count; i++)
+            for (int i = 0; i < ptList.Count; i++)
             {
                 Vector3d vert = new Vector3d(ptList[i].X, 0, ptList[i].Y);
                 vertList.Add(vert);
@@ -231,15 +241,12 @@ namespace PolySplitTri
             }
 
             tris = polySplitTris.Split(poly);
-           
-            for(int i=0; i<tris.Count; i++)
+
+            for (int i = 0; i < tris.Count; i++)
             {
                 Color color = CreateRandomColor();
                 trisFillColor.Add(color);
             }
-
-
-            canvas.Refresh();
         }
     }
 

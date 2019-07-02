@@ -1,0 +1,10 @@
+D:\Documents\github\PolySplitTriangles\PolySplitTri\PolySplitTri\obj\Debug\PolySplitTri.csprojAssemblyReference.cache
+D:\Documents\github\PolySplitTriangles\PolySplitTri\PolySplitTri\obj\Debug\PolySplitTri.Properties.Resources.resources
+D:\Documents\github\PolySplitTriangles\PolySplitTri\PolySplitTri\obj\Debug\PolySplitTri.csproj.GenerateResource.cache
+D:\Documents\github\PolySplitTriangles\PolySplitTri\PolySplitTri\obj\Debug\PolySplitTri.csproj.CoreCompileInputs.cache
+D:\Documents\github\PolySplitTriangles\PolySplitTri\PolySplitTri\bin\Debug\PolySplitTri.exe.config
+D:\Documents\github\PolySplitTriangles\PolySplitTri\PolySplitTri\bin\Debug\PolySplitTri.exe
+D:\Documents\github\PolySplitTriangles\PolySplitTri\PolySplitTri\bin\Debug\PolySplitTri.pdb
+D:\Documents\github\PolySplitTriangles\PolySplitTri\PolySplitTri\obj\Debug\PolySplitTri.exe
+D:\Documents\github\PolySplitTriangles\PolySplitTri\PolySplitTri\obj\Debug\PolySplitTri.pdb
+D:\Documents\github\PolySplitTriangles\PolySplitTri\PolySplitTri\obj\Debug\PolySplitTri.SplitTriDemo.resources

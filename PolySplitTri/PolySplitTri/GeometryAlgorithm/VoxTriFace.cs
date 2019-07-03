@@ -305,6 +305,7 @@ namespace Geometry_Algorithm
             CreateVoxBoxToList(gridYIdxs, cellx, cellz);
         }
 
+
         /// <summary>
         /// 根据投影Rect生成体素box
         /// </summary>
@@ -314,6 +315,7 @@ namespace Geometry_Algorithm
         {
             VoxBox voxBox = new VoxBox(voxBoxList.Count.ToString(), voxSpace, cellx, cellz, gridYIdxs[0], gridYIdxs[1]);
             voxBoxList.Add(voxBox);
+
         }
 
     }

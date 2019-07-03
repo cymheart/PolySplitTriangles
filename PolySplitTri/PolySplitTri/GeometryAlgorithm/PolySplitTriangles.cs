@@ -71,7 +71,6 @@ namespace Geometry_Algorithm
                         break;
                 }
 
-
                 LinkedListNode<Vector3d>[] nodes = GetLimitShortSideTri(legalTriNodeList);
                 if (nodes != null)
                 {

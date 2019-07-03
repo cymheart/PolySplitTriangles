@@ -587,8 +587,8 @@ namespace Geometry_Algorithm
         /// 并集
         /// </summary>
         void UnionOp()
-        { 
-             BooleanOp(BooleanType.Union);
+        {
+            BooleanOp(BooleanType.Union);
 
             if (resultPolyVertsList.Count != 0)
                 return;

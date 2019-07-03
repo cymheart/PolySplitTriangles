@@ -190,6 +190,59 @@ namespace Geometry_Algorithm
             return true;
         }
 
+        /// <summary>
+        /// 转换到简单多边形
+        /// </summary>
+        /// <param name="poly"></param>
+        /// <returns></returns>
+        public Poly ConvertToSimplePoly2D(Poly poly)
+        {
+            if (poly.vertexsList.Count <= 1)
+                return poly;
+
+            Vector3d[] verts;
+            Vector3d vert;
+            PolySide[] outSides = poly.sidesList[0];
+
+            List<Vector3d[]>[] sideBoundRects = new List<Vector3d[]>[poly.sidesList.Count];
+            for (int i = 0; i < poly.sidesList.Count; i++)
+                sideBoundRects[i] = CreatePolySidesBoundRects(poly.sidesList[i]);
+         
+            
+            for (int i = 1; i < poly.vertexsList.Count; i++)
+            {
+                verts = poly.vertexsList[i];
+                vert = verts[0];                
+            }
+
+            return null;
+        }
+
+
+        /// <summary>
+        /// 为多边形边生成BoundRect
+        /// </summary>
+        /// <param name="sides"></param>
+        /// <returns></returns>
+        public List<Vector3d[]> CreatePolySidesBoundRects(PolySide[] sides)
+        {
+            if (sides == null || sides.Length == 0)
+                return null;
+
+            List<Vector3d[]> boundRectList = new List<Vector3d[]>();
+            Vector3d[] boundRect;
+            Vector3d vert;
+
+            for (int i = 0; i < sides.Length; i++)
+            {
+                vert = sides[i].startpos + sides[i].dir * sides[i].step;
+                boundRect = GetBoundRectXZ(new Vector3d[] {sides[i].startpos, vert });
+                boundRectList.Add(boundRect);
+            }
+
+            return boundRectList;
+        }
+
 
         public double TestClockWise2D(Vector3d[] verts)
         {

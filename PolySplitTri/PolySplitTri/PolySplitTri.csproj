@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GeometryAlgorithm\PolyConvertToSimplePoly.cs" />
     <Compile Include="SplitTriDemo.cs">
       <SubType>Form</SubType>
     </Compile>

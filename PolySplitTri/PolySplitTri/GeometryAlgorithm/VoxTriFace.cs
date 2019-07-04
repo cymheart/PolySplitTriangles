@@ -61,7 +61,7 @@ namespace Geometry_Algorithm
                 new Vector3d(voxSpace.cellSize, 0, 0),
             };
 
-            preCellRectSides = geoAlgo.CreateBaseDataPolySides(preCellRect);
+            preCellRectSides = geoAlgo.CreatePolySides(preCellRect);
 
 
             //

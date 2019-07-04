@@ -190,41 +190,6 @@ namespace Geometry_Algorithm
             return true;
         }
 
-        /// <summary>     
-        /// 转换到简单多边形
-        /// 1.如果存在内环，从第一个内环的第一个顶点开始，往外环第一个顶点作连线ab
-        ///   否则结束整个算法
-        /// 2.记录线段ab和所有有交点的边线，排序这些交点边线， 找到离端点a最近的交点边线cd
-        ///   如果边线cd不存在，将直接以ab线段作为分割线，分割内环，形成新的去除这个内环多边形，然后回到第1步.
-        ///   否则如果边线cd存在，并且就是外环边线，将ab连接线段的末端点修改为和这条边的首端点连接，重复执行第2步。
-        ///   否则如果边线cd存在，并且是内环边线，将把ab连接线段首端点修改为这条内环边的首端点，重复执行第2步。  
-        /// </summary>
-        /// <param name="poly"></param>
-        /// <returns></returns>
-        public Poly ConvertToSimplePoly2D(Poly poly)
-        {
-            if (poly.vertexsList.Count <= 1)
-                return poly;
-
-            Vector3d[] verts;
-            Vector3d vert;
-            PolySide[] outSides = poly.sidesList[0];
-
-            List<Vector3d[]>[] sideBoundRects = new List<Vector3d[]>[poly.sidesList.Count];
-            for (int i = 0; i < poly.sidesList.Count; i++)
-                sideBoundRects[i] = CreatePolySidesBoundRects(poly.sidesList[i]);
-         
-            
-            for (int i = 1; i < poly.vertexsList.Count; i++)
-            {
-                verts = poly.vertexsList[i];
-                vert = verts[0];                
-            }
-
-            return null;
-        }
-
-
         /// <summary>
         /// 为多边形边生成BoundRect
         /// </summary>

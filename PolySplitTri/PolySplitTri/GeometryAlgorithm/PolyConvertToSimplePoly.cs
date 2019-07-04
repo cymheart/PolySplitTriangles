@@ -42,6 +42,9 @@ namespace Geometry_Algorithm
         public Poly ConvertToSimplePoly2D(Poly poly)
         {
             List<CrossSideInfo> crossSideInfoList = new List<CrossSideInfo>();
+            List<Vector3d> resultPolyVertexList = new List<Vector3d>();
+            List<PolySide> resultPolySideList = new List<PolySide>();
+
 
 
             if (poly.vertexsList.Count <= 1)
@@ -49,7 +52,8 @@ namespace Geometry_Algorithm
 
             int selectInHoopIdx = 1;
             int[] excludeInHoopSideIdx = new int[] { 0, poly.sidesList[selectInHoopIdx].Length - 1 };
-
+            int startVertexIdx = 0;
+            int endVertexIdx = 0;
 
             Vector3d startVert;
             Vector3d outVert = poly.vertexsList[0][0];
@@ -97,14 +101,100 @@ namespace Geometry_Algorithm
             {
                 crossSideInfoList.Sort(cmp);
 
+                if(crossSideInfoList[0].hoopIdx == 0)
+                {
+
+                }
+
             }
-
-
+            else
+            {
+                poly = CreatePolyByRemoveRing(poly, selectInHoopIdx, startVertexIdx, endVertexIdx, side);
+            }
 
             return null;
 
 
         }
+
+
+        /// <summary>
+        /// 生成去除一个内环后的多边形
+        /// </summary>
+        /// <param name="poly">原始多边形</param>
+        /// <param name="ringIdx">内环在原始多边形中的编号</param>
+        /// <param name="ringVertexIdx">内环分切点编号</param>
+        /// <param name="outVertexIdx">外环分切点编号</param>
+        /// <param name="endLinkSide">连接线段</param>
+        /// <returns></returns>
+        Poly CreatePolyByRemoveRing(
+            Poly poly, 
+            int ringIdx, 
+            int ringSplitVertIdx, 
+            int outSplitVertIdx,
+            PolySide endLinkSide)
+        {
+            List<Vector3d> resultPolyVertexList = new List<Vector3d>();
+            List<PolySide> resultPolySideList = new List<PolySide>();
+            Vector3d outVert = poly.vertexsList[0][outSplitVertIdx];
+            Vector3d startVert = poly.vertexsList[ringIdx][ringSplitVertIdx];
+
+            for (int i = outSplitVertIdx; i < poly.vertexsList[0].Length; i++)
+                resultPolyVertexList.Add(poly.vertexsList[0][i]);
+            for (int i = 0; i <= outSplitVertIdx; i++)
+                resultPolyVertexList.Add(poly.vertexsList[0][i]);
+
+            for (int i = ringSplitVertIdx; i < poly.vertexsList[ringIdx].Length; i++)
+                resultPolyVertexList.Add(poly.vertexsList[ringIdx][i]);
+            for (int i = 0; i <= ringSplitVertIdx; i++)
+                resultPolyVertexList.Add(poly.vertexsList[ringIdx][i]);
+
+
+            //   
+            for (int i = outSplitVertIdx; i < poly.sidesList[0].Length; i++)
+                resultPolySideList.Add(poly.sidesList[0][i]);
+            for (int i = 0; i <= outSplitVertIdx; i++)
+                resultPolySideList.Add(poly.sidesList[0][i]);
+
+
+            PolySide linkSide = geoAlgor.CreatePolySide(outVert, startVert);
+            resultPolySideList.Add(linkSide);
+
+            for (int i = ringSplitVertIdx; i < poly.sidesList[ringIdx].Length; i++)
+                resultPolySideList.Add(poly.sidesList[ringIdx][i]);
+            for (int i = 0; i <= ringSplitVertIdx; i++)
+                resultPolySideList.Add(poly.sidesList[ringIdx][i]);
+
+            resultPolySideList.Add(endLinkSide);
+
+
+            //
+            Poly resultPoly = new Poly();
+            resultPoly.sidesList.Add(resultPolySideList.ToArray());
+
+            for (int i = 1; i < poly.sidesList.Count; i++)
+            {
+                if (i == ringIdx)
+                    continue;
+
+                resultPoly.sidesList.Add(poly.sidesList[i]);
+            }
+
+
+            //
+            resultPoly.vertexsList.Add(resultPolyVertexList.ToArray());
+
+            for (int i = 1; i < poly.vertexsList.Count; i++)
+            {
+                if (i == ringIdx)
+                    continue;
+
+                resultPoly.vertexsList.Add(poly.vertexsList[i]);
+            }
+
+            return resultPoly;
+        }
+
 
         class CrossSideInfoComparer : IComparer<CrossSideInfo>
         {

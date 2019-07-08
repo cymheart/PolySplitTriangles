@@ -227,7 +227,7 @@ namespace Geometry_Algorithm
             //   
             for (int i = outSplitVertIdx; i < poly.sidesList[0].Length; i++)
                 resultPolySideList.Add(poly.sidesList[0][i]);
-            for (int i = 0; i <= outSplitVertIdx; i++)
+            for (int i = 0; i < outSplitVertIdx; i++)
                 resultPolySideList.Add(poly.sidesList[0][i]);
 
 
@@ -236,7 +236,7 @@ namespace Geometry_Algorithm
 
             for (int i = ringSplitVertIdx; i < poly.sidesList[ringIdx].Length; i++)
                 resultPolySideList.Add(poly.sidesList[ringIdx][i]);
-            for (int i = 0; i <= ringSplitVertIdx; i++)
+            for (int i = 0; i < ringSplitVertIdx; i++)
                 resultPolySideList.Add(poly.sidesList[ringIdx][i]);
 
             resultPolySideList.Add(endLinkSide);
@@ -266,6 +266,7 @@ namespace Geometry_Algorithm
                 resultPoly.vertexsList.Add(poly.vertexsList[i]);
             }
 
+            resultPoly.faceNormal = poly.faceNormal;
             return resultPoly;
         }
 

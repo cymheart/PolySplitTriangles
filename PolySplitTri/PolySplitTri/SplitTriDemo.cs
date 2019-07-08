@@ -356,7 +356,7 @@ namespace PolySplitTri
 
 
             poly = convSimplePoly.ConvertToSimplePoly2D(poly);
-           
+          
             tris = polySplitTris.Split(poly);
 
             for (int i = 0; i < tris.Count; i++)

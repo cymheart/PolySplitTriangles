@@ -16,78 +16,135 @@ namespace PolySplitTri
     public partial class SplitTriDemo : Form
     {
         PolySplitTriangles polySplitTris;
+        PolyConvertToSimplePoly convSimplePoly;
         GeometryAlgorithm geoAlgor = new GeometryAlgorithm();
         Graphics g;
         Pen pen = new Pen(Color.Red);
-        int state = 0;
+        int state = 1;
         int inPointIdx = -1;
         int opMode = 0;
 
         List<Point> ptList = new List<Point>();
-        Point movePoint = new Point(0,0);
+        List<List<Point>> ptLists = new List<List<Point>>();
+
+        Point? movePoint = new Point(0,0);
         List<Vector3d[]> tris = null;
         List<Color> trisFillColor = new List<Color>();
+
+
 
         public SplitTriDemo()
         {
             InitializeComponent();
             polySplitTris = new PolySplitTriangles(geoAlgor);
+            convSimplePoly = new PolyConvertToSimplePoly(geoAlgor); 
 
             this.DoubleBuffered = true;
 
         }
 
+        //private void canvas_MouseDown(object sender, MouseEventArgs e)
+        //{
+        //    if (state == 1)
+        //    {
+        //        Point mousePt = GetMousePos();
+        //        inPointIdx = InRegionIdx(mousePt);
+
+        //        if (inPointIdx != -1)
+        //            opMode = 1;
+        //        return;
+        //    }
+
+        //    if (e.Button == MouseButtons.Left)
+        //    {
+        //        Point pt = GetMousePos();
+        //        ptList.Add(pt);
+        //        canvas.Refresh();
+        //    }
+        //    else
+        //    {
+        //        state = 1;
+        //    }
+
+        //}
+
+        //private void canvas_MouseUp(object sender, MouseEventArgs e)
+        //{
+        //    if (opMode == 1)
+        //        opMode = 2;
+        //    else
+        //        opMode = 0;
+        //}
+
+        //private void canvas_MouseMove(object sender, MouseEventArgs e)
+        //{
+        //    if (opMode == 0)
+        //    {
+        //        movePoint = GetMousePos();
+        //        canvas.Refresh();
+        //    }
+        //    else if (opMode == 1)
+        //    {
+        //        ptList[inPointIdx] = GetMousePos();
+
+        //        if (tris != null)
+        //            CreateSplitTris();
+
+        //        canvas.Refresh();
+        //    }
+        //}
+
+
         private void canvas_MouseDown(object sender, MouseEventArgs e)
         {
-            if (state == 1)
-            {
-                Point mousePt = GetMousePos();
-                inPointIdx = InRegionIdx(mousePt);
-
-                if (inPointIdx != -1)
-                    opMode = 1;
-                return;
-            }
-
             if (e.Button == MouseButtons.Left)
             {
-                Point pt = GetMousePos();
-                ptList.Add(pt);
-                canvas.Refresh();
-            }
-            else
-            {
-                state = 1;
-            }
+                switch(state)
+                {
+                    case 0:
+                        {
+                            Point pt = GetMousePos();    
+                            ptList.Add(pt);
+                            canvas.Refresh();
+                        }
+                        break;
 
+                    case 1:
+                        {
+                            ptList = new List<Point>();
+                            ptLists.Add(ptList);
+                            Point pt = GetMousePos();
+                            movePoint = pt;
+                            ptList.Add(pt);         
+                            state = 0;
+                            canvas.Refresh();
+                        }
+                        break;
+                }
+            }
         }
 
         private void canvas_MouseUp(object sender, MouseEventArgs e)
         {
-            if (opMode == 1)
-                opMode = 2;
-            else
-                opMode = 0;
+            if (e.Button == MouseButtons.Right)
+            {
+                if (state == 0)
+                {
+                    state = 1;
+                    movePoint = null;
+                    canvas.Refresh();
+                }
+            }           
         }
 
         private void canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (opMode == 0)
+            if(state == 0)
             {
                 movePoint = GetMousePos();
                 canvas.Refresh();
             }
-            else if(opMode == 1)
-            {
-                ptList[inPointIdx] = GetMousePos();
-
-                if(tris != null)
-                    CreateSplitTris();
-
-                canvas.Refresh();
-            }
         }
-
 
 
         private void canvas_Paint(object sender, PaintEventArgs e)
@@ -109,23 +166,39 @@ namespace PolySplitTri
                 }
             }
 
+            //
             Point pt;
-            for(int i=1; i<ptList.Count; i++)
+            for (int i = 0; i < ptLists.Count - 1; i++)
+            {
+                List<Point> tmpPtList = ptLists[i];
+                for (int j = 1; j < tmpPtList.Count; j++)
+                {
+                    pt = tmpPtList[j];
+                    g.DrawLine(Pens.DarkBlue, pt, tmpPtList[j - 1]);
+                }
+
+                if (tmpPtList.Count >= 3)
+                {
+                    Point lastpt = tmpPtList[tmpPtList.Count - 1];
+                    g.DrawLine(Pens.DarkBlue, lastpt, tmpPtList[0]);
+                }
+            }
+
+            for (int i = 1; i < ptList.Count; i++)
             {
                 pt = ptList[i];
                 g.DrawLine(Pens.DarkBlue, pt, ptList[i - 1]);
             }
 
 
-            //
-            switch(state)
+            switch (state)
             {
                 case 0:
-                    {
-                        if (ptList.Count > 0)
-                        {
+                    {                  
+                        if (ptList.Count > 0 && movePoint != null)
+                        {                           
                             Point lastpt = ptList[ptList.Count - 1];
-                            g.DrawLine(Pens.DarkBlue, lastpt, movePoint);
+                            g.DrawLine(Pens.DarkBlue, lastpt, movePoint.Value);
                         }
                     }
                     break;
@@ -143,18 +216,19 @@ namespace PolySplitTri
 
 
             //
-            for (int i = 0; i < ptList.Count; i++)
+            for (int i = 0; i < ptLists.Count; i++)
             {
-                pt = ptList[i];
-                int w = 10, h = 10;
-                int x = pt.X - w / 2;
-                int y = pt.Y - h / 2;
-                Rectangle rect = new Rectangle(x, y, w, h);
-                g.FillEllipse(Brushes.Red, rect);
+                List<Point> tmpPtList = ptLists[i];
+                for (int j = 0; j < tmpPtList.Count; j++)
+                {
+                    pt = tmpPtList[j];
+                    int w = 10, h = 10;
+                    int x = pt.X - w / 2;
+                    int y = pt.Y - h / 2;
+                    Rectangle rect = new Rectangle(x, y, w, h);
+                    g.FillEllipse(Brushes.Red, rect);
+                }
             }
-
-
-
         }
 
         int InRegionIdx(Point pt)
@@ -205,8 +279,9 @@ namespace PolySplitTri
 
         private void btnClear_Click(object sender, EventArgs e)
         {
+            ptLists.Clear();
             ptList.Clear();
-            state = 0;
+            state = 1;
             opMode = 0;
             tris = null;
             canvas.Refresh();
@@ -221,7 +296,7 @@ namespace PolySplitTri
         void CreateSplitTris()
         {
             List<Vector3d> vertList = new List<Vector3d>();
-
+            ptList = ptLists[0];
             for (int i = 0; i < ptList.Count; i++)
             {
                 Vector3d vert = new Vector3d(ptList[i].X, 0, ptList[i].Y);
@@ -239,14 +314,49 @@ namespace PolySplitTri
                 for (int i = vertList.Count - 1; i >= 0; i--)
                     tmpVerts[j++] = vertList[i];
 
-                poly = geoAlgor.CreatePoly(tmpVerts, Vector3d.down);
+                List<Vector3d[]> polyVertexsList = new List<Vector3d[]>();
+                polyVertexsList.Add(tmpVerts);
 
+                List<Point> ptList;
+                for (int i = 1; i < ptLists.Count; i++)
+                {
+                    ptList = ptLists[i];
+                    j = 0;
+                    tmpVerts = new Vector3d[ptList.Count];
+                    for (int k = ptList.Count - 1; k >= 0; k--)
+                    {
+                        tmpVerts[j++] = new Vector3d(ptList[k].X, 0, ptList[k].Y);
+                    }
+
+                    polyVertexsList.Add(tmpVerts);
+                }
+
+                poly = geoAlgor.CreatePoly(polyVertexsList, Vector3d.down);
             }
             else
             {
-                poly = geoAlgor.CreatePoly(vertList.ToArray(), Vector3d.down);
+                List<Vector3d[]> polyVertexsList = new List<Vector3d[]>();
+                polyVertexsList.Add(vertList.ToArray());
+
+                List<Point> ptList;
+                for (int i = 1; i < ptLists.Count; i++)
+                {
+                    ptList = ptLists[i];
+                    Vector3d[] tmpVerts = new Vector3d[ptList.Count];
+                    for (int j = 0; j < ptList.Count; j++)
+                    {
+                        tmpVerts[j] = new Vector3d(ptList[j].X, 0, ptList[j].Y);
+                    }
+
+                    polyVertexsList.Add(tmpVerts);
+                }
+
+                poly = geoAlgor.CreatePoly(polyVertexsList, Vector3d.down);
             }
 
+
+            poly = convSimplePoly.ConvertToSimplePoly2D(poly);
+           
             tris = polySplitTris.Split(poly);
 
             for (int i = 0; i < tris.Count; i++)

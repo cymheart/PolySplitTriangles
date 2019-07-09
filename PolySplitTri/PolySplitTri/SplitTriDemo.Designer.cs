@@ -33,6 +33,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnSplit = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
+            this.btnPreSet = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -68,6 +69,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.btnPreSet);
             this.panel1.Controls.Add(this.btnSplit);
             this.panel1.Controls.Add(this.btnClear);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -78,7 +80,7 @@
             // 
             // btnSplit
             // 
-            this.btnSplit.Location = new System.Drawing.Point(0, 37);
+            this.btnSplit.Location = new System.Drawing.Point(0, 74);
             this.btnSplit.Name = "btnSplit";
             this.btnSplit.Size = new System.Drawing.Size(111, 38);
             this.btnSplit.TabIndex = 1;
@@ -96,7 +98,17 @@
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
-            // Form1
+            // btnPreSet
+            // 
+            this.btnPreSet.Location = new System.Drawing.Point(0, 37);
+            this.btnPreSet.Name = "btnPreSet";
+            this.btnPreSet.Size = new System.Drawing.Size(111, 38);
+            this.btnPreSet.TabIndex = 2;
+            this.btnPreSet.Text = "生成预设多边形";
+            this.btnPreSet.UseVisualStyleBackColor = true;
+            this.btnPreSet.Click += new System.EventHandler(this.btnPreSet_Click);
+            // 
+            // SplitTriDemo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -104,7 +116,7 @@
             this.ClientSize = new System.Drawing.Size(806, 450);
             this.Controls.Add(this.tableLayoutPanel1);
             this.DoubleBuffered = true;
-            this.Name = "Form1";
+            this.Name = "SplitTriDemo";
             this.Text = "多边形分割三角面";
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -120,6 +132,7 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btnSplit;
         private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.Button btnPreSet;
     }
 }
 

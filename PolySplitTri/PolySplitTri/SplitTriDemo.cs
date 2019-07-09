@@ -371,5 +371,69 @@ namespace PolySplitTri
                 trisFillColor.Add(color);
             }
         }
+
+        private void btnPreSet_Click(object sender, EventArgs e)
+        {
+            Point[] pts0 = new Point[]
+            {
+                new Point(232,59),
+                new Point(536,59),
+                new Point(472,367),
+                new Point(172,320),
+            };
+
+            Point[] pts1 = new Point[]
+            {
+                new Point(250,103),
+                new Point(264,135),
+                new Point(354,103),
+            };
+
+            Point[] pts2 = new Point[]
+           {
+                new Point(430,105),
+                new Point(502,113),
+                new Point(435,150),
+           };
+
+            Point[] pts3 = new Point[]
+          {
+                new Point(236,202),
+                new Point(256,265),
+                new Point(329,221),
+          };
+
+            ptList.Clear();
+            ptLists.Clear();
+
+            List<Point> tmpPtList = new List<Point>();
+            for (int i=0; i<pts0.Length; i++)
+            {
+                tmpPtList.Add(pts0[i]);
+            }
+            ptLists.Add(tmpPtList);
+
+            tmpPtList = new List<Point>();
+            for (int i = 0; i < pts1.Length; i++)
+            {
+                tmpPtList.Add(pts1[i]);
+            }
+            ptLists.Add(tmpPtList);
+
+            tmpPtList = new List<Point>();
+            for (int i = 0; i < pts2.Length; i++)
+            {
+                tmpPtList.Add(pts2[i]);
+            }
+            ptLists.Add(tmpPtList);
+
+            for (int i = 0; i < pts3.Length; i++)
+            {
+                ptList.Add(pts3[i]);
+            }
+            ptLists.Add(ptList);
+
+            canvas.Refresh();
+        }
     }
 }

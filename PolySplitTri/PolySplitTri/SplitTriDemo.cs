@@ -296,10 +296,10 @@ namespace PolySplitTri
         void CreateSplitTris()
         {
             List<Vector3d> vertList = new List<Vector3d>();
-            ptList = ptLists[0];
-            for (int i = 0; i < ptList.Count; i++)
+            List<Point> tmpPtList = ptLists[0];
+            for (int i = 0; i < tmpPtList.Count; i++)
             {
-                Vector3d vert = new Vector3d(ptList[i].X, 0, ptList[i].Y);
+                Vector3d vert = new Vector3d(tmpPtList[i].X, 0, tmpPtList[i].Y);
                 vertList.Add(vert);
             }
 

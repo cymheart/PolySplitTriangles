@@ -636,7 +636,7 @@ namespace Geometry_Algorithm
                 if(i == polyVertexs.Length - 1)
                     sides[i] = CreatePolySide(polyVertexs[i], polyVertexs[0]);
                 else
-                    sides[i] = CreatePolySide(polyVertexs[i+1], polyVertexs[i]);
+                    sides[i] = CreatePolySide(polyVertexs[i], polyVertexs[i+1]);
             }
 
             return sides;

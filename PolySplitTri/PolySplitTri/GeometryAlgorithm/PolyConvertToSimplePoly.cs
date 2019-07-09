@@ -42,7 +42,6 @@ namespace Geometry_Algorithm
             cmp = new CrossSideInfoComparer(this);
         }
 
-
         /// <summary>     
         /// 切割为简单多边形
         /// 1.如果当前多边形存在内环(ring)，从第一个内环m的第一个顶点开始，往外环第一个顶点作连线ab，执行算法第2步。

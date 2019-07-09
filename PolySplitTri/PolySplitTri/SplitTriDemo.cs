@@ -216,6 +216,8 @@ namespace PolySplitTri
 
 
             //
+            Font font = new Font("微软雅黑", 7);
+
             for (int i = 0; i < ptLists.Count; i++)
             {
                 List<Point> tmpPtList = ptLists[i];
@@ -227,6 +229,10 @@ namespace PolySplitTri
                     int y = pt.Y - h / 2;
                     Rectangle rect = new Rectangle(x, y, w, h);
                     g.FillEllipse(Brushes.Red, rect);
+
+
+
+                    g.DrawString("(" + pt.X + "," + pt.Y + ")", font, Brushes.DarkRed, pt);
                 }
             }
         }

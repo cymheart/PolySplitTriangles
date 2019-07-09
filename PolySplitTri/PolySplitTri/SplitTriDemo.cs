@@ -278,7 +278,7 @@ namespace PolySplitTri
         private void btnSplit_Click(object sender, EventArgs e)
         {
             CreateSplitTris();
-
+            state = 3;
             canvas.Refresh();
         }
 

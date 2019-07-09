@@ -34,6 +34,14 @@ namespace Geometry_Algorithm
             public double dist;
         }
 
+        public struct IgnoreSideInfo
+        {
+            public int ringIdx;
+            public int sideIdx1;
+            public int sideIdx2;
+        }
+
+
         CrossSideInfoComparer cmp;
 
         public PolyConvertToSimplePoly(GeometryAlgorithm geoAlgor)
@@ -41,6 +49,7 @@ namespace Geometry_Algorithm
             this.geoAlgor = geoAlgor;
             cmp = new CrossSideInfoComparer(this);
         }
+
 
         /// <summary>     
         /// 切割为简单多边形
@@ -65,12 +74,6 @@ namespace Geometry_Algorithm
                     return poly;
 
                 int selectInRingIdx = 1;
-                int[] excludeSideIdx = new int[]
-                {
-                    0, poly.sidesList[selectInRingIdx].Length - 1,
-                    0, poly.sidesList[0].Length - 1,
-                };
-
                 int startVertexIdx = 0;
                 int endVertexIdx = 0;
 
@@ -83,7 +86,7 @@ namespace Geometry_Algorithm
                 //ab线段
                 PolySide sideAB = geoAlgor.CreatePolySide(startVertA, outVertB);
                 int result;
-
+                IgnoreSideInfo[] ignoreSideInfos = CreateIgnoreSideInfos(poly, new Vector3d[] { startVertA, outVertB });
                 //交点
                 Vector3d pt;
 
@@ -95,19 +98,9 @@ namespace Geometry_Algorithm
 
                         for (int j = 0; j < sides.Length; j++)
                         {
-                            if (selectInRingIdx == i &&
-                                (j == excludeSideIdx[0] ||
-                                 j == excludeSideIdx[1]))
-                            {
+                            if (InIgnoreSides(i,j, ignoreSideInfos))
                                 continue;
-                            }
-                            else if (i == 0 &&
-                                (j == excludeSideIdx[2] ||
-                                 j == excludeSideIdx[3]))
-                            {
-                                continue;
-                            }
-
+            
                             //求解ab线段和多边形边sides[j]的交点
                             result = geoAlgor.SolvePolySideCrossPoint2D(sides[j], sideAB, out pt);
                             if (result == 1)  //存在交点
@@ -135,18 +128,11 @@ namespace Geometry_Algorithm
                         //如果边线cd存在，并且就是外环边线，将ab连接线段的末端点修改为和这条外边的首端点连接
                         if (crossSideInfoList[0].ringIdx == 0)
                         {
-                            int ringIdx = crossSideInfoList[0].ringIdx;
-
-                            excludeSideIdx[2] = crossSideInfoList[0].sidesIdx;
-
-                            if (crossSideInfoList[0].sidesIdx == 0)
-                                excludeSideIdx[3] = poly.sidesList[0].Length - 1;
-                            else
-                                excludeSideIdx[3] = crossSideInfoList[0].sidesIdx - 1;
-
                             //线段ab结束点修改为这条边的首端点
                             outVertB = crossSideInfoList[0].side.startpos;
                             endVertexIdx = crossSideInfoList[0].sidesIdx;
+
+                            ignoreSideInfos = CreateIgnoreSideInfos(poly, new Vector3d[] { startVertA, outVertB });
 
                             //ab线段
                             sideAB = geoAlgor.CreatePolySide(startVertA, outVertB);
@@ -162,17 +148,11 @@ namespace Geometry_Algorithm
 
                                 selectInRingIdx = crossSideInfoList[i].ringIdx;
 
-                                excludeSideIdx[0] = crossSideInfoList[i].sidesIdx;
-
-                                if (crossSideInfoList[i].sidesIdx == 0)
-                                    excludeSideIdx[1] = poly.sidesList[selectInRingIdx].Length - 1;
-                                else
-                                    excludeSideIdx[1] = crossSideInfoList[i].sidesIdx - 1;
-
-
                                 //线段ab开始点修改为这条边的首端点
                                 startVertA = crossSideInfoList[i].side.startpos;
                                 startVertexIdx = crossSideInfoList[i].sidesIdx;
+
+                                ignoreSideInfos = CreateIgnoreSideInfos(poly, new Vector3d[] { startVertA, outVertB });
 
                                 //ab线段
                                 sideAB = geoAlgor.CreatePolySide(startVertA, outVertB);
@@ -268,6 +248,66 @@ namespace Geometry_Algorithm
             resultPoly.faceNormal = poly.faceNormal;
             return resultPoly;
         }
+
+
+        IgnoreSideInfo[] CreateIgnoreSideInfos(Poly poly, Vector3d[] verts)
+        {
+            List<IgnoreSideInfo> ignoreSideInfos = new List<IgnoreSideInfo>();
+            IgnoreSideInfo ignoreSideInfo;
+            Vector3d[] vertexs;
+            int j2;
+
+            for (int n = 0; n < verts.Length; n++)
+            {
+                for (int i = 0; i < poly.vertexsList.Count; i++)
+                {
+                    vertexs = poly.vertexsList[i];
+                    for (int j = 0; j < vertexs.Length; j++)
+                    {
+                        if (geoAlgor.IsEqual(vertexs[j], verts[n]) == false)
+                            continue;
+
+                        if (j == 0) { j2 = poly.sidesList[i].Length - 1; }
+                        else { j2 = j - 1; }
+
+                        ignoreSideInfo = new IgnoreSideInfo()
+                        {
+                            ringIdx = i,
+                            sideIdx1 = j,
+                            sideIdx2 = j2
+                        };
+
+                        ignoreSideInfos.Add(ignoreSideInfo);
+                    }
+                }
+            }
+
+            return ignoreSideInfos.ToArray();
+        }
+
+
+        /// <summary>
+        /// 判断指定环边是否在忽略边列表中
+        /// </summary>
+        /// <param name="ringIdx"></param>
+        /// <param name="sideIdx"></param>
+        /// <param name="ignoreSideInfos"></param>
+        /// <returns></returns>
+        bool InIgnoreSides(int ringIdx, int sideIdx, IgnoreSideInfo[] ignoreSideInfos)
+        {
+            for(int i=0; i<ignoreSideInfos.Length; i++)
+            {
+                if (ringIdx == ignoreSideInfos[i].ringIdx &&
+                    (sideIdx == ignoreSideInfos[i].sideIdx1 ||
+                    sideIdx == ignoreSideInfos[i].sideIdx2))
+                    return true;
+            }
+
+            return false;
+
+        }
+
+
 
 
         class CrossSideInfoComparer : IComparer<CrossSideInfo>

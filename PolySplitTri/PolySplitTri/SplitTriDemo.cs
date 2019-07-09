@@ -392,8 +392,9 @@ namespace PolySplitTri
             Point[] pts2 = new Point[]
            {
                 new Point(430,105),
-                new Point(502,113),
                 new Point(435,150),
+                new Point(502,113),
+    
            };
 
             Point[] pts3 = new Point[]

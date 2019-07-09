@@ -21,8 +21,8 @@ namespace PolySplitTri
         Graphics g;
         Pen pen = new Pen(Color.Red);
         int state = 1;
-        int inPointIdx = -1;
-        int opMode = 0;
+        int[] inPointIdx;
+
 
         List<Point> ptList = new List<Point>();
         List<List<Point>> ptLists = new List<List<Point>>();
@@ -43,58 +43,6 @@ namespace PolySplitTri
 
         }
 
-        //private void canvas_MouseDown(object sender, MouseEventArgs e)
-        //{
-        //    if (state == 1)
-        //    {
-        //        Point mousePt = GetMousePos();
-        //        inPointIdx = InRegionIdx(mousePt);
-
-        //        if (inPointIdx != -1)
-        //            opMode = 1;
-        //        return;
-        //    }
-
-        //    if (e.Button == MouseButtons.Left)
-        //    {
-        //        Point pt = GetMousePos();
-        //        ptList.Add(pt);
-        //        canvas.Refresh();
-        //    }
-        //    else
-        //    {
-        //        state = 1;
-        //    }
-
-        //}
-
-        //private void canvas_MouseUp(object sender, MouseEventArgs e)
-        //{
-        //    if (opMode == 1)
-        //        opMode = 2;
-        //    else
-        //        opMode = 0;
-        //}
-
-        //private void canvas_MouseMove(object sender, MouseEventArgs e)
-        //{
-        //    if (opMode == 0)
-        //    {
-        //        movePoint = GetMousePos();
-        //        canvas.Refresh();
-        //    }
-        //    else if (opMode == 1)
-        //    {
-        //        ptList[inPointIdx] = GetMousePos();
-
-        //        if (tris != null)
-        //            CreateSplitTris();
-
-        //        canvas.Refresh();
-        //    }
-        //}
-
-
         private void canvas_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -110,10 +58,23 @@ namespace PolySplitTri
                         break;
 
                     case 1:
+                    case 3:
                         {
+                            Point pt = GetMousePos();
+                            inPointIdx = InRegionIdx(pt);
+
+                            if (inPointIdx != null)
+                            {
+                                state = 2;
+                                break;
+                            }
+
+                            if (state == 3)
+                                break;
+
                             ptList = new List<Point>();
                             ptLists.Add(ptList);
-                            Point pt = GetMousePos();
+
                             movePoint = pt;
                             ptList.Add(pt);         
                             state = 0;
@@ -134,7 +95,14 @@ namespace PolySplitTri
                     movePoint = null;
                     canvas.Refresh();
                 }
-            }           
+            }    
+            else if(e.Button == MouseButtons.Left)
+            {
+                if (state == 2)
+                {
+                    state = 3;
+                }
+            }
         }
 
         private void canvas_MouseMove(object sender, MouseEventArgs e)
@@ -142,6 +110,15 @@ namespace PolySplitTri
             if(state == 0)
             {
                 movePoint = GetMousePos();
+                canvas.Refresh();
+            }
+            else if(state == 2)
+            {
+                ptLists[inPointIdx[0]][inPointIdx[1]] = GetMousePos();
+
+                if (tris != null)
+                    CreateSplitTris();
+
                 canvas.Refresh();
             }
         }
@@ -237,26 +214,32 @@ namespace PolySplitTri
             }
         }
 
-        int InRegionIdx(Point pt)
+        int[] InRegionIdx(Point pt)
         {
             Rectangle rect;
             Point centerPt;
+            List<Point> tmpPtList;
 
-            for (int i = 0; i < ptList.Count; i++)
+            for (int j = 0; j < ptLists.Count; j++)
             {
-                centerPt = ptList[i];
-                int w = 10, h = 10;
-                int x = centerPt.X - w / 2;
-                int y = centerPt.Y - h / 2;
-                rect = new Rectangle(x, y, w, h);
+                tmpPtList = ptLists[j];
 
-                if (rect.Contains(pt))
+                for (int i = 0; i < tmpPtList.Count; i++)
                 {
-                    return i;
+                    centerPt = tmpPtList[i];
+                    int w = 10, h = 10;
+                    int x = centerPt.X - w / 2;
+                    int y = centerPt.Y - h / 2;
+                    rect = new Rectangle(x, y, w, h);
+
+                    if (rect.Contains(pt))
+                    {
+                        return new int[] {j, i};
+                    }
                 }
             }
 
-            return -1;
+            return null;
         }
 
         Point GetMousePos()
@@ -288,7 +271,6 @@ namespace PolySplitTri
             ptLists.Clear();
             ptList.Clear();
             state = 1;
-            opMode = 0;
             tris = null;
             canvas.Refresh();
         }
@@ -296,6 +278,7 @@ namespace PolySplitTri
         private void btnSplit_Click(object sender, EventArgs e)
         {
             CreateSplitTris();
+
             canvas.Refresh();
         }
 

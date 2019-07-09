@@ -75,13 +75,13 @@ namespace Geometry_Algorithm
 
                 int selectInRingIdx = 1;
                 int startVertexIdx = 0;
-                int endVertexIdx = 0;
+                int endVertexIdx = 1;
 
                 //线段ab起始点
                 Vector3d startVertA = poly.vertexsList[selectInRingIdx][0];
 
                 //线段ab结束点
-                Vector3d outVertB = poly.vertexsList[0][0];
+                Vector3d outVertB = poly.vertexsList[0][endVertexIdx];
 
                 //ab线段
                 PolySide sideAB = geoAlgor.CreatePolySide(startVertA, outVertB);

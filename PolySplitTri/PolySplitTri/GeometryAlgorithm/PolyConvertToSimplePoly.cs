@@ -11,29 +11,6 @@ namespace Geometry_Algorithm
     {
         GeometryAlgorithm geoAlgor;
 
-        public struct CrossSideInfo
-        {
-            /// <summary>
-            /// 多边形边
-            /// </summary>
-            public PolySide side;
-
-            /// <summary>
-            /// 边所在环编号
-            /// </summary>
-            public int ringIdx;
-
-            /// <summary>
-            /// 边所在环的边编号位置
-            /// </summary>
-            public int sidesIdx;
-
-            /// <summary>
-            /// 此边与ab线段的交点与开始点a的距离
-            /// </summary>
-            public double dist;
-        }
-
         public struct IgnoreSideInfo
         {
             public int ringIdx;

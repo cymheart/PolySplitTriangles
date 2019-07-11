@@ -29,6 +29,8 @@ namespace Geometry_Algorithm
         {
             int voxStartIdx = voxBox.heightCellStartIdx;
             int voxEndIdx = voxBox.heightCellStartIdx;
+            float yPosStart = voxBox.yPosRange[0];
+            float yPosEnd = voxBox.yPosRange[1];    
 
             LinkedListNode<VoxHeightSpan> startNode = null;
             LinkedListNode<VoxHeightSpan> endNode = null;
@@ -43,6 +45,7 @@ namespace Geometry_Algorithm
                 else if (voxStartIdx >= node.Value.startCellIdx  &&
                     voxStartIdx <= node.Value.endCellIdx)
                 {
+                    yPosStart = node.Value.startPos;
                     voxStartIdx = node.Value.startCellIdx;
                     startNode = node;
                 }
@@ -55,6 +58,7 @@ namespace Geometry_Algorithm
                 else if (voxEndIdx >= node.Value.startCellIdx && 
                     voxEndIdx <= node.Value.endCellIdx)
                 {
+                    yPosEnd = node.Value.endPos;
                     voxEndIdx = node.Value.endCellIdx;
                     endNode = node;
                     break;
@@ -66,6 +70,8 @@ namespace Geometry_Algorithm
 
             VoxHeightSpan voxSpan = new VoxHeightSpan()
             {
+                startPos = yPosStart,
+                endPos = yPosEnd,
                 startCellIdx = voxStartIdx,
                 endCellIdx = voxEndIdx
             };

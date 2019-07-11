@@ -7,7 +7,7 @@ namespace Geometry_Algorithm
         VoxSpace voxSpace;
 
         public Vector3d position;
-        float[] yPosRange = null;
+        public float[] yPosRange = null;
 
         public int floorCellIdxX;
         public int floorCellIdxZ;

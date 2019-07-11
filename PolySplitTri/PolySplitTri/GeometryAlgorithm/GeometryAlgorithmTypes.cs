@@ -98,14 +98,6 @@ namespace Geometry_Algorithm
         public double minY, maxY;
     }
 
-    public struct VoxHeightSpan
-    {
-        public float startPos;
-        public float endPos;
-
-        public int startCellIdx;
-        public int endCellIdx;
-    }
 
     public struct Range
     {

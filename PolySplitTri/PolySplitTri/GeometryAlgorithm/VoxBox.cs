@@ -7,7 +7,7 @@ namespace Geometry_Algorithm
         VoxSpace voxSpace;
 
         public Vector3d position;
-        public float[] yPosRange = null;
+        public double[] yPosRange = null;
 
         public int floorCellIdxX;
         public int floorCellIdxZ;
@@ -39,7 +39,7 @@ namespace Geometry_Algorithm
             yPosRange = voxSpace.GetWallGridCellPosRange(heightCellStartIdx, heightCellEndIdx);
             position.y = (yPosRange[0] + yPosRange[1]) / 2f;
         }
-        
+  
         public int GetHeightCellRangeCount()
         {
             return heightCellEndIdx - heightCellStartIdx;

@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GeometryAlgorithm\SpaceSpanGroup.cs" />
     <Compile Include="GeometryAlgorithm\PolyConvertToSimplePoly.cs" />
     <Compile Include="SplitTriDemo.cs">
       <SubType>Form</SubType>
@@ -63,7 +64,7 @@
     <Compile Include="GeometryAlgorithm\PolyBoolean.cs" />
     <Compile Include="GeometryAlgorithm\PolySplitTriangles.cs" />
     <Compile Include="GeometryAlgorithm\VoxBox.cs" />
-    <Compile Include="GeometryAlgorithm\VoxHeightFieldInfo.cs" />
+    <Compile Include="GeometryAlgorithm\SolidSpanGroup.cs" />
     <Compile Include="GeometryAlgorithm\VoxSpace.cs" />
     <Compile Include="GeometryAlgorithm\VoxTriFace.cs" />
     <Compile Include="LinearAlgebra\Complex.cs" />

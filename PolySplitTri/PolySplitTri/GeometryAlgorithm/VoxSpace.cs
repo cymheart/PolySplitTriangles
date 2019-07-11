@@ -98,11 +98,11 @@ namespace Geometry_Algorithm
         /// <param name="cellStartIdx"></param>
         /// <param name="cellEndIdx"></param>
         /// <returns></returns>
-        public float[] GetWallGridCellPosRange(int cellStartIdx, int cellEndIdx)
+        public double[] GetWallGridCellPosRange(int cellStartIdx, int cellEndIdx)
         {
-            float ystart = cellStartIdx * cellHeight;
-            float yend = cellEndIdx * cellHeight;
-            return new float[] { ystart, yend };
+            double ystart = cellStartIdx * cellHeight;
+            double yend = cellEndIdx * cellHeight;
+            return new double[] { ystart, yend };
         }
 
     }

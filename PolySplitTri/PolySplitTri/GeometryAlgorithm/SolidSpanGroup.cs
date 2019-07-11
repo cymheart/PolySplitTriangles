@@ -1,39 +1,55 @@
-﻿using System;
+﻿using Mathd;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace Geometry_Algorithm
 {
-
-    public class VoxHeightFieldInfo
+    /// <summary>
+    /// 实心跨距
+    /// </summary>
+    public struct SolidSpan
     {
-        Dictionary<int, LinkedList<VoxHeightSpan>> heightSpanDict = new Dictionary<int, LinkedList<VoxHeightSpan>>();
+        public double startPos;
+        public double endPos;
 
-        public void AddVoxBox(VoxBox voxBox)
+        public int startCellIdx;
+        public int endCellIdx;
+    }
+
+    
+    /// <summary>
+    /// 实心跨距组
+    /// </summary>
+    public class SolidSpanGroup
+    {
+        public Dictionary<int, LinkedList<SolidSpan>> soildSpanDict = new Dictionary<int, LinkedList<SolidSpan>>();
+
+        public void AppendVoxBox(VoxBox voxBox)
         {
             int key = GetKey(voxBox.floorCellIdxX, voxBox.floorCellIdxZ);
-            LinkedList<VoxHeightSpan> cellSpanList;
+            LinkedList<SolidSpan> cellSpanList;
 
-            if (heightSpanDict.TryGetValue(key, out cellSpanList) == false)
+            if (soildSpanDict.TryGetValue(key, out cellSpanList) == false)
             {
-                cellSpanList = new LinkedList<VoxHeightSpan>();
-                heightSpanDict[key] = cellSpanList;
+                cellSpanList = new LinkedList<SolidSpan>();
+                soildSpanDict[key] = cellSpanList;
             }
 
             AppendVoxBoxToSpanHeightList(cellSpanList, voxBox);
         }
 
 
-        void AppendVoxBoxToSpanHeightList(LinkedList<VoxHeightSpan> cellSpanList, VoxBox voxBox)
+        void AppendVoxBoxToSpanHeightList(LinkedList<SolidSpan> cellSpanList, VoxBox voxBox)
         {
             int voxStartIdx = voxBox.heightCellStartIdx;
             int voxEndIdx = voxBox.heightCellStartIdx;
-            float yPosStart = voxBox.yPosRange[0];
-            float yPosEnd = voxBox.yPosRange[1];    
+            double yPosStart = voxBox.yPosRange[0];
+            double yPosEnd = voxBox.yPosRange[1];    
 
-            LinkedListNode<VoxHeightSpan> startNode = null;
-            LinkedListNode<VoxHeightSpan> endNode = null;
+            LinkedListNode<SolidSpan> startNode = null;
+            LinkedListNode<SolidSpan> endNode = null;
 
             var node = cellSpanList.First;
             for (; node != null; node = node.Next)
@@ -68,7 +84,7 @@ namespace Geometry_Algorithm
             if(startNode != null && endNode == null)
                 endNode = cellSpanList.Last;
 
-            VoxHeightSpan voxSpan = new VoxHeightSpan()
+            SolidSpan voxSpan = new SolidSpan()
             {
                 startPos = yPosStart,
                 endPos = yPosEnd,
@@ -87,7 +103,7 @@ namespace Geometry_Algorithm
             {
                 var prevNode = startNode.Previous;
                 var mnode = startNode;
-                LinkedListNode<VoxHeightSpan> tmpNode;
+                LinkedListNode<SolidSpan> tmpNode;
                 bool flag = true;
 
                 while(flag)
@@ -107,11 +123,15 @@ namespace Geometry_Algorithm
             }
         }
 
-
-
-        int GetKey(int cellx, int cellz)
+        public int GetKey(int cellx, int cellz)
         {
             return (cellx << 14) | cellz; 
+        }
+
+        public int[] GetCellIdxs(int key)
+        {
+            int[] idxs = new int[] { key >> 14, 0x3FFF & key };
+            return idxs;
         }
 
     }

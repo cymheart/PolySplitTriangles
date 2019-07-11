@@ -8,25 +8,100 @@ namespace Geometry_Algorithm
 
     public class VoxHeightFieldInfo
     {
-        Dictionary<int, List<VoxHeightSpan>> heightSpanDict = new Dictionary<int, List<VoxHeightSpan>>();
+        Dictionary<int, LinkedList<VoxHeightSpan>> heightSpanDict = new Dictionary<int, LinkedList<VoxHeightSpan>>();
 
         public void AddVoxBox(VoxBox voxBox)
         {
             int key = GetKey(voxBox.floorCellIdxX, voxBox.floorCellIdxZ);
-            List<VoxHeightSpan> cellSpanList;
+            LinkedList<VoxHeightSpan> cellSpanList;
 
             if (heightSpanDict.TryGetValue(key, out cellSpanList) == false)
             {
-                cellSpanList = new List<VoxHeightSpan>();
+                cellSpanList = new LinkedList<VoxHeightSpan>();
                 heightSpanDict[key] = cellSpanList;
+            }
+
+            AppendVoxBoxToSpanHeightList(cellSpanList, voxBox);
+        }
+
+
+        void AppendVoxBoxToSpanHeightList(LinkedList<VoxHeightSpan> cellSpanList, VoxBox voxBox)
+        {
+            int voxStartIdx = voxBox.heightCellStartIdx;
+            int voxEndIdx = voxBox.heightCellStartIdx;
+
+            LinkedListNode<VoxHeightSpan> startNode = null;
+            LinkedListNode<VoxHeightSpan> endNode = null;
+
+            var node = cellSpanList.First;
+            for (; node != null; node = node.Next)
+            {
+                if(node.Value.startCellIdx > voxStartIdx && startNode == null)
+                {
+                    startNode = node;
+                }
+                else if (voxStartIdx >= node.Value.startCellIdx  &&
+                    voxStartIdx <= node.Value.endCellIdx)
+                {
+                    voxStartIdx = node.Value.startCellIdx;
+                    startNode = node;
+                }
+
+                if (node.Value.startCellIdx > voxEndIdx && endNode == null)
+                {
+                    endNode = node.Previous;
+                    break;
+                }
+                else if (voxEndIdx >= node.Value.startCellIdx && 
+                    voxEndIdx <= node.Value.endCellIdx)
+                {
+                    voxEndIdx = node.Value.endCellIdx;
+                    endNode = node;
+                    break;
+                }
+            }
+
+            if(startNode != null && endNode == null)
+                endNode = cellSpanList.Last;
+
+            VoxHeightSpan voxSpan = new VoxHeightSpan()
+            {
+                startCellIdx = voxStartIdx,
+                endCellIdx = voxEndIdx
+            };
+
+            if (startNode == null && endNode == null)
+            {
+                if(node == cellSpanList.First)
+                    cellSpanList.AddFirst(voxSpan);
+                else
+                    cellSpanList.AddLast(voxSpan);
+            }     
+            else
+            {
+                var prevNode = startNode.Previous;
+                var mnode = startNode;
+                LinkedListNode<VoxHeightSpan> tmpNode;
+                bool flag = true;
+
+                while(flag)
+                {
+                    if (mnode == endNode)
+                        flag = false;
+
+                    tmpNode = mnode.Next;
+                    cellSpanList.Remove(mnode);
+                    mnode = tmpNode;
+                }
+
+                if(prevNode == null)
+                    cellSpanList.AddFirst(voxSpan);
+                else
+                    cellSpanList.AddAfter(prevNode, voxSpan);
             }
         }
 
 
-        void dd()
-        {
-
-        }
 
         int GetKey(int cellx, int cellz)
         {

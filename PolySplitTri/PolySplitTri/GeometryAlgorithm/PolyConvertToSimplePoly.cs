@@ -199,7 +199,7 @@ namespace Geometry_Algorithm
             //
             resultPoly.vertexsList.Add(resultPolyVertexList.ToArray());
 
-            for (int i = 1; i < poly.vertexsList.Count; i++)
+            for (int i = 1; i < poly.vertexsList.Count; i++) 
             {
                 if (i == ringIdx)
                     continue;

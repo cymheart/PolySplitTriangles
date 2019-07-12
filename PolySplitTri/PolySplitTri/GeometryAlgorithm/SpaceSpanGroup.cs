@@ -16,6 +16,9 @@ namespace Geometry_Algorithm
         public Vector3d[] rect;
         public double startPos;
         public double endPos;
+        public int type;
+
+        
     }
 
     /// <summary>
@@ -23,6 +26,8 @@ namespace Geometry_Algorithm
     /// </summary>
     public class SpaceSpanGroup
     {
+        double minWalkHeight = 0;
+
         VoxSpace voxSpace;
         Dictionary<int, List<SpaceSpan>> spaceSpanDict = new Dictionary<int, List<SpaceSpan>>();
 
@@ -48,28 +53,37 @@ namespace Geometry_Algorithm
                 solidSpanList = item.Value;
 
                 var node = solidSpanList.First;
-                double spaceEndPos = -1;
-
                 spaceSpanList = new List<SpaceSpan>();
 
                 for (; node != null; node = node.Next)
                 {
-                    if (node.Next != null)
-                        spaceEndPos = node.Next.Value.startPos;
-                    else
-                        spaceEndPos = node.Value.endPos + 100000;
+                    spaceSpan = new SpaceSpan();
+                    spaceSpan.rect = voxRect;
+                    spaceSpan.startPos = node.Value.endPos;
 
-                    spaceSpan = new SpaceSpan()
-                    {
-                        rect = voxRect,
-                        startPos = node.Value.endPos,
-                        endPos = spaceEndPos
-                    };
+                    if (node.Next != null)
+                        spaceSpan.endPos = node.Next.Value.startPos;
+                    else
+                        spaceSpan.endPos = spaceSpan.startPos + 100000;
+
+                    if (spaceSpan.endPos - spaceSpan.startPos < minWalkHeight)
+                        spaceSpan.type = 1;
+                    else
+                        spaceSpan.type = 0;
 
                     spaceSpanList.Add(spaceSpan);
                 }
 
                 spaceSpanDict[item.Key] = spaceSpanList;
+            }
+        }
+
+
+        void dd()
+        {
+            foreach (var item in spaceSpanDict)
+            {
+
             }
         }
 

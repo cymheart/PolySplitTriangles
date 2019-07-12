@@ -40,7 +40,6 @@ namespace Geometry_Algorithm
             AppendVoxBoxToSpanHeightList(cellSpanList, voxBox);
         }
 
-
         void AppendVoxBoxToSpanHeightList(LinkedList<SolidSpan> cellSpanList, VoxBox voxBox)
         {
             int voxStartIdx = voxBox.heightCellStartIdx;

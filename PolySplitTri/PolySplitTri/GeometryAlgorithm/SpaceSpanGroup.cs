@@ -16,9 +16,7 @@ namespace Geometry_Algorithm
         public Vector3d[] rect;
         public double startPos;
         public double endPos;
-        public int type;
-
-        
+        public int type;       
     }
 
     /// <summary>
@@ -26,7 +24,11 @@ namespace Geometry_Algorithm
     /// </summary>
     public class SpaceSpanGroup
     {
+        /// <summary>
+        /// 最小角色行走高度
+        /// </summary>
         double minWalkHeight = 0;
+
 
         VoxSpace voxSpace;
         Dictionary<int, List<SpaceSpan>> spaceSpanDict = new Dictionary<int, List<SpaceSpan>>();
@@ -44,6 +46,8 @@ namespace Geometry_Algorithm
             int[] cellIdxs;
             Vector3d[] voxRect;
             List<SpaceSpan> spaceSpanList;
+            double startpos;
+            double endpos;
 
             foreach (var item in soildSpanDict)
             {
@@ -57,21 +61,20 @@ namespace Geometry_Algorithm
 
                 for (; node != null; node = node.Next)
                 {
-                    spaceSpan = new SpaceSpan();
-                    spaceSpan.rect = voxRect;
-                    spaceSpan.startPos = node.Value.endPos;
-
+                    startpos = node.Value.endPos;
                     if (node.Next != null)
-                        spaceSpan.endPos = node.Next.Value.startPos;
+                        endpos = node.Next.Value.startPos;
                     else
-                        spaceSpan.endPos = spaceSpan.startPos + 100000;
+                        endpos = startpos + 100000;
 
-                    if (spaceSpan.endPos - spaceSpan.startPos < minWalkHeight)
-                        spaceSpan.type = 1;
-                    else
-                        spaceSpan.type = 0;
-
-                    spaceSpanList.Add(spaceSpan);
+                    if (endpos - startpos >= minWalkHeight)
+                    {
+                        spaceSpan = new SpaceSpan();
+                        spaceSpan.rect = voxRect;
+                        spaceSpan.startPos = startpos;
+                        spaceSpan.endPos = endpos;
+                        spaceSpanList.Add(spaceSpan);
+                    }
                 }
 
                 spaceSpanDict[item.Key] = spaceSpanList;

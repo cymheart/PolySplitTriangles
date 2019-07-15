@@ -107,7 +107,9 @@ namespace Geometry_Algorithm
             }
         }
 
-
+        /// <summary>
+        /// 生成span间的连接关系
+        /// </summary>
         void CreateSpansConnectRelation()
         {
             List<SpaceSpan> spaceSpanList;
@@ -186,36 +188,63 @@ namespace Geometry_Algorithm
                         //判断是否为此方向有障碍阻止移动
                         if (isObstacleDir)
                         {
-
+                            SetNotWalkSpansByObstacleDir(spanIdx, span, neiDirIdx);
                         }
                     }
                 }
             }
         }
 
-        void dd(int[] spanIdx,  int obstacleDir)
+
+        /// <summary>
+        /// 根据障碍方向，和角色行走半径，给span的半径范围内不可移动的spans作标记
+        /// </summary>
+        /// <param name="spanIdx"></param>
+        /// <param name="span"></param>
+        /// <param name="obstacleDir"></param>
+        void SetNotWalkSpansByObstacleDir(int[] spanIdx, SpaceSpan span, int obstacleDir)
         {
             int x, y;
-            int key;
+            int n = 1;
+            if (obstacleDir == 2 || obstacleDir == 3)
+                n = -1;
 
-            for(int i = 0; i < walkRadiusVoxCount; i++)
+            switch(obstacleDir)
             {
-                x = spanIdx[0] - i;
-                y = spanIdx[1];
-                key = GetKey(x, y);
+                case 0:
+                case 2:
+                    {
+                        for (int i = 0; i < walkRadiusVoxCount; i++)
+                        {
+                            x = spanIdx[0] + i * n;
+                            SetNotWalkSpans(x, spanIdx[1], span.startPos, span.endPos);
 
+                            for (int j = 0; j <= i + 1; j++)
+                            {
+                                SetNotWalkSpans(x, spanIdx[1] - j, span.startPos, span.endPos);
+                                SetNotWalkSpans(x, spanIdx[1] + j, span.startPos, span.endPos);
+                            }
+                        }
 
+                    }
+                    break;
 
+                case 1:
+                case 3:
+                    {
+                        for (int i = 0; i < walkRadiusVoxCount; i++)
+                        {
+                            y = spanIdx[0] + i * n;
+                            SetNotWalkSpans(spanIdx[0], y, span.startPos, span.endPos);
 
-                for (int j = 1; j <= i; j++)
-                {
-                    y = spanIdx[1] - j;
-
-
-
-                }
-
-
+                            for (int j = 1; j <= i + 1; j++)
+                            {
+                                SetNotWalkSpans(spanIdx[0] - j, y, span.startPos, span.endPos);
+                                SetNotWalkSpans(spanIdx[0] + j, y, span.startPos, span.endPos);
+                            }
+                        }
+                    }
+                    break;
             }
         }
 
@@ -230,6 +259,9 @@ namespace Geometry_Algorithm
             for(int i=0; i<spaceSpanList.Count; i++)
             {
                 span = spaceSpanList[i];
+
+                if(span.type == 1)
+                    continue;
 
                 if (span.startPos > spanEndposY ||            
                     span.endPos < spanStartposY)

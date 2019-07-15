@@ -90,7 +90,7 @@ namespace Geometry_Algorithm
                     if (node.Next != null)
                         endpos = node.Next.Value.startPos;
                     else
-                        endpos = startpos + 100000;
+                        endpos = startpos + 1000000;
 
                     if (endpos - startpos >= minWalkHeight)
                     {

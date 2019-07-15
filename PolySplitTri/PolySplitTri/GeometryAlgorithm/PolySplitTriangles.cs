@@ -61,7 +61,9 @@ namespace Geometry_Algorithm
                             continue;
 
                         Vector3d pt = node2.Value;
-                        isInTri |= TestPointInTri(pt, abc[0].Value, abc[1].Value, abc[2].Value, aCross, bCross, cCross);
+                        isInTri = TestPointInTri(pt, abc[0].Value, abc[1].Value, abc[2].Value, aCross, bCross, cCross);
+                        if (isInTri == true)
+                            break;
                     }
 
                     if (isInTri == false)
@@ -94,14 +96,18 @@ namespace Geometry_Algorithm
 
         LinkedListNode<Vector3d>[] GetLimitShortSideTri(LinkedList<LinkedListNode<Vector3d>[]> triList)
         {
-            LinkedListNode<Vector3d>[] triNodes;
-            LinkedListNode<Vector3d>[] minSideTriNodes = null;
-            double minSideLen = 999999;
+            if (triList == null)
+                return null;
 
-            for (var node = triList.First; node != null; node = node.Next)
+            LinkedListNode<Vector3d>[] triNodes;
+            LinkedListNode<Vector3d>[] minSideTriNodes = triList.First.Value;
+            Vector3d ca = minSideTriNodes[0].Value - minSideTriNodes[2].Value;
+            double minSideLen = ca.sqrMagnitude;
+
+            for (var node = triList.First.Next; node != null; node = node.Next)
             {
                 triNodes = node.Value;
-                Vector3d ca = triNodes[0].Value - triNodes[2].Value;
+                ca = triNodes[0].Value - triNodes[2].Value;
                 if (ca.sqrMagnitude < minSideLen)
                 {
                     minSideLen = ca.sqrMagnitude;

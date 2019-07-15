@@ -7,8 +7,8 @@ namespace Geometry_Algorithm
     public class VoxSpace
     {
         public Vector3d boundSize;
-        public float cellSize = 0.1f;
-        public float cellHeight = 0.01f;
+        public double cellSize = 0.1f;
+        public double cellHeight = 0.01f;
 
         /// <summary>
         /// 求点pa从坐标系A转换到另一个坐标系B后点的坐标位置pb，转换原理:
@@ -39,11 +39,11 @@ namespace Geometry_Algorithm
         /// <returns></returns>
         public Vector3d[] GetFloorGridCellRect(int xIdxCell, int zIdxCell)
         {
-            float xStart = xIdxCell * cellSize;
-            float xEnd = xStart + cellSize;
+            double xStart = xIdxCell * cellSize;
+            double xEnd = xStart + cellSize;
 
-            float zStart = zIdxCell * cellSize;
-            float zEnd = zStart + cellSize;
+            double zStart = zIdxCell * cellSize;
+            double zEnd = zStart + cellSize;
 
             Vector3d[] rect = new Vector3d[]
             {
@@ -65,8 +65,8 @@ namespace Geometry_Algorithm
         /// <returns></returns>
         public Vector3d GetFloorGridCellRectCenterPos(int xIdxCell, int zIdxCell)
         {
-            float xStart = xIdxCell * cellSize;
-            float zStart = zIdxCell * cellSize;
+            double xStart = xIdxCell * cellSize;
+            double zStart = zIdxCell * cellSize;
             return new Vector3d((xStart + cellSize + xStart) / 2, 0, (zStart + cellSize + zStart) / 2);
         }
 

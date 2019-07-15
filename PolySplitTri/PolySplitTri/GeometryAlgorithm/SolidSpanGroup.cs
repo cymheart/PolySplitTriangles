@@ -124,6 +124,9 @@ namespace Geometry_Algorithm
 
         public int GetKey(int cellx, int cellz)
         {
+            if (cellx < 0 || cellz < 0)
+                return -1;
+
             return (cellx << 14) | cellz; 
         }
 

@@ -51,11 +51,11 @@ namespace Geometry_Algorithm
         public SpaceSpanGroup(VoxSpace voxSpace)
         {
             this.voxSpace = voxSpace;
-            walkRadiusVoxCount = GetWalkRadiusVoxCount();
+            walkRadiusVoxCount = CalWalkRadiusVoxCount();
         }
 
 
-        int GetWalkRadiusVoxCount()
+        int CalWalkRadiusVoxCount()
         {
             double n = walkRadius / voxSpace.cellSize;
             int count = (int)(Math.Ceiling(n));

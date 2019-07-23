@@ -16,6 +16,11 @@ namespace Geometry_Algorithm
         public Vector3d[] rect;
         public double startPos;
         public double endPos;
+
+        /// <summary>
+        /// 0:可通行
+        /// 1:不可通行
+        /// </summary>
         public int type;
 
         public SpaceSpan[] connectSpan = 
@@ -41,6 +46,10 @@ namespace Geometry_Algorithm
         /// 角色行走半径
         /// </summary>
         double walkRadius = 0.4f;
+
+        /// <summary>
+        /// 角色行走半径占据多少个voxSpanBox
+        /// </summary>
         int walkRadiusVoxCount = 0;
 
         static int[] relativeDirMap = { 2, 3, 0, 1 };
@@ -124,7 +133,7 @@ namespace Geometry_Algorithm
             SpaceSpan neiSpan;
             int[] spanIdx;
             int neiKey;
-            bool isObstacleDir = false;
+            bool isObstacleDir = false; //是否为有障碍阻止通行的方向
             double realStepHeight;
             double realWalkHeightA, realWalkHeightB;
 
@@ -133,6 +142,7 @@ namespace Geometry_Algorithm
                 spanIdx = GetCellIdxs(item.Key);
                 spaceSpanList = item.Value;
 
+                //neiDirIdx以当前span为中心,按左手顺时针: 0←  1↑  2→  3↓
                 for (int neiDirIdx = 0; neiDirIdx < 4; neiDirIdx++)
                 {          
                     neiKey = GetNeiKey(spanIdx, neiDirIdx);
@@ -203,35 +213,36 @@ namespace Geometry_Algorithm
 
 
         /// <summary>
-        /// 根据障碍方向，和角色行走半径，给span的半径范围内不可移动的spans作标记
+        /// 根据障碍方向，和角色行走半径，给当前span上的角色半径范围内不可移动的周边spans作标记
         /// </summary>
         /// <param name="spanIdx"></param>
         /// <param name="span"></param>
-        /// <param name="obstacleDir"></param>
+        /// <param name="obstacleDir">以当前span为中心,按左手顺时针: 0←  1↑  2→  3↓</param>
         void SetNotWalkSpansByObstacleDir(int[] spanIdx, SpaceSpan span, int obstacleDir)
         {
             int x, y;
-            int n = 1;
+            int flag = 1;
             if (obstacleDir == 2 || obstacleDir == 3)
-                n = -1;
+                flag = -1;
 
-            switch(obstacleDir)
+            double limitEndPosY = span.startPos + minWalkHeight;
+
+            switch (obstacleDir)
             {
                 case 0:
                 case 2:
                     {
                         for (int i = 0; i < walkRadiusVoxCount; i++)
                         {
-                            x = spanIdx[0] + i * n;
-                            SetNotWalkSpans(x, spanIdx[1], span.startPos, span.endPos);
+                            x = spanIdx[0] + i * flag;
+                            SetNotWalkSpans(x, spanIdx[1], span.startPos, limitEndPosY);
 
                             for (int j = 0; j <= i + 1; j++)
                             {
-                                SetNotWalkSpans(x, spanIdx[1] - j, span.startPos, span.endPos);
-                                SetNotWalkSpans(x, spanIdx[1] + j, span.startPos, span.endPos);
+                                SetNotWalkSpans(x, spanIdx[1] - j, span.startPos, limitEndPosY);
+                                SetNotWalkSpans(x, spanIdx[1] + j, span.startPos, limitEndPosY);
                             }
                         }
-
                     }
                     break;
 
@@ -240,13 +251,13 @@ namespace Geometry_Algorithm
                     {
                         for (int i = 0; i < walkRadiusVoxCount; i++)
                         {
-                            y = spanIdx[0] + i * n;
-                            SetNotWalkSpans(spanIdx[0], y, span.startPos, span.endPos);
+                            y = spanIdx[0] + i * flag;
+                            SetNotWalkSpans(spanIdx[0], y, span.startPos, limitEndPosY);
 
                             for (int j = 1; j <= i + 1; j++)
                             {
-                                SetNotWalkSpans(spanIdx[0] - j, y, span.startPos, span.endPos);
-                                SetNotWalkSpans(spanIdx[0] + j, y, span.startPos, span.endPos);
+                                SetNotWalkSpans(spanIdx[0] - j, y, span.startPos, limitEndPosY);
+                                SetNotWalkSpans(spanIdx[0] + j, y, span.startPos, limitEndPosY);
                             }
                         }
                     }
@@ -254,11 +265,20 @@ namespace Geometry_Algorithm
             }
         }
 
+        /// <summary>
+        /// 在高度方向上设置那些和limitStartPosY~limitEndPosY范围重叠的span为不可行走类型
+        /// </summary>
+        /// <param name="spanCellX"></param>
+        /// <param name="spanCellZ"></param>
+        /// <param name="limitStartPosY"></param>
+        /// <param name="limitEndPosY"></param>
         void SetNotWalkSpans(
             int spanCellX, int spanCellZ, 
-            double spanStartposY, double spanEndposY)
+            double limitStartPosY, double limitEndPosY)
         {
             int key = GetKey(spanCellX, spanCellZ);
+
+            //获取当前floor cell单元上的span链
             List<SpaceSpan> spaceSpanList = spaceSpanDict[key];
             SpaceSpan span, neiSpan;
 
@@ -269,8 +289,8 @@ namespace Geometry_Algorithm
                 if(span.type == 1)
                     continue;
 
-                if (span.startPos > spanEndposY ||            
-                    span.endPos < spanStartposY)
+                if (span.startPos > limitEndPosY ||            
+                    span.endPos < limitStartPosY)
                     continue;
 
                 span.type = 1;
@@ -297,7 +317,6 @@ namespace Geometry_Algorithm
                 case 1: return GetKey(spanIdx[0], spanIdx[1] + 1);
                 case 2: return GetKey(spanIdx[0] + 1, spanIdx[1]);
                 case 3: return GetKey(spanIdx[0], spanIdx[1] - 1);
-
             }
 
             return -1;

@@ -361,9 +361,6 @@ namespace Geometry_Algorithm
             }
         }
 
-
-
-
         void SplitOneRegion(SpaceSpan startSpan, int region)
         {
             SpaceSpan centerSpan, connectSpan;
@@ -409,75 +406,6 @@ namespace Geometry_Algorithm
                 backSpanlist.Clear();
             }
         }
-
-
-
-        //int SplitRegions(SpaceSpan startSpan, int region)
-        //{
-        //    SpaceSpan centerSpan, connectSpan;
-        //    List<SpaceSpan> tmp;
-        //    List<SpaceSpan> frontSpanlist = new List<SpaceSpan>(200);
-        //    List<SpaceSpan> backSpanlist = new List<SpaceSpan>(200);
-        //    List<SpaceSpan> newRegionSpan = new List<SpaceSpan>(200);
-
-        //    newRegionSpan.Add(startSpan);
-
-        //    for (int n = 0; n < newRegionSpan.Count; n++)
-        //    {
-        //        if (newRegionSpan[n].region != 0)
-        //            continue;
-
-        //        region++;
-        //        frontSpanlist.Clear();
-        //        frontSpanlist.Add(newRegionSpan[n]);
-
-        //        while (frontSpanlist.Count > 0)
-        //        {
-        //            for (int i = 0; i < frontSpanlist.Count; i++)
-        //            {
-        //                centerSpan = frontSpanlist[i];
-        //                centerSpan.isEdge = false;
-
-        //                for (int j = 0; j < 4; j++)
-        //                {
-        //                    connectSpan = centerSpan.connectSpan[j];
-
-        //                    if (connectSpan == null ||
-        //                        connectSpan.region > 0 ||
-        //                        connectSpan.type == 1)
-        //                    {
-        //                        centerSpan.isEdge = true;
-        //                        continue;
-        //                    }
-
-        //                    if (connectSpan.cellSpaceSpans.region == region)
-        //                    {
-        //                        centerSpan.isEdge = true;
-
-        //                        if (connectSpan.region != 0)
-        //                        {
-        //                            connectSpan.region = 0;
-        //                            newRegionSpan.Add(connectSpan);
-        //                        }
-        //                        continue;
-        //                    }
-
-        //                    connectSpan.region = region;
-
-        //                    backSpanlist.Add(connectSpan);
-        //                }
-        //            }
-
-        //            tmp = frontSpanlist;
-        //            frontSpanlist = backSpanlist;
-        //            backSpanlist = tmp;
-        //            backSpanlist.Clear();
-        //        }
-        //    }
-
-        //    return region;
-        //}
-
 
         int GetRelativeDir(int dir)
         {

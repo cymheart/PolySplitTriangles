@@ -13,7 +13,6 @@ namespace Geometry_Algorithm
     /// </summary>
     public class SpaceSpan
     {
-        public Vector3d[] rect;
         public double startPos;
         public double endPos;
 
@@ -23,9 +22,32 @@ namespace Geometry_Algorithm
         /// </summary>
         public int type;
 
+        /// <summary>
+        /// 所属区域编号
+        /// </summary>
+        public int region;
+
+        /// <summary>
+        /// 指向所属单元spaceSpans
+        /// </summary>
+        public CellSpaceSpans cellSpaceSpans;
+
+        /// <summary>
+        /// 连通区域
+        /// </summary>
         public SpaceSpan[] connectSpan = 
             new SpaceSpan[] { null, null, null, null };
-}
+    }
+
+
+    public class CellSpaceSpans
+    {
+        public Vector3d[] rect;
+        public List<SpaceSpan> spaceSpanList;
+        public int region;
+    }
+
+
 
     /// <summary>
     /// 空间跨距组
@@ -55,7 +77,7 @@ namespace Geometry_Algorithm
         static int[] relativeDirMap = { 2, 3, 0, 1 };
 
         VoxSpace voxSpace;
-        Dictionary<int, List<SpaceSpan>> spaceSpanDict = new Dictionary<int, List<SpaceSpan>>();
+        Dictionary<int, CellSpaceSpans> spaceSpanDict = new Dictionary<int, CellSpaceSpans>();
 
         public SpaceSpanGroup(VoxSpace voxSpace)
         {
@@ -85,6 +107,7 @@ namespace Geometry_Algorithm
             SpaceSpan spaceSpan;
             int[] cellIdxs;
             Vector3d[] voxRect;
+            CellSpaceSpans cellSpaceSpans;
             List<SpaceSpan> spaceSpanList;
             double startpos;
             double endpos;
@@ -95,9 +118,12 @@ namespace Geometry_Algorithm
                 voxRect = voxSpace.GetFloorGridCellRect(cellIdxs[0], cellIdxs[1]);
 
                 solidSpanList = item.Value;
-
                 var node = solidSpanList.First;
+
+                cellSpaceSpans = new CellSpaceSpans();
                 spaceSpanList = new List<SpaceSpan>();
+                cellSpaceSpans.spaceSpanList = spaceSpanList;
+                cellSpaceSpans.rect = voxRect;
 
                 for (; node != null; node = node.Next)
                 {
@@ -110,15 +136,15 @@ namespace Geometry_Algorithm
                     if (endpos - startpos >= minWalkHeight)
                     {
                         spaceSpan = new SpaceSpan();
-                        spaceSpan.rect = voxRect;
                         spaceSpan.startPos = startpos;
                         spaceSpan.endPos = endpos;
+                        spaceSpan.cellSpaceSpans = cellSpaceSpans;
                         spaceSpan.connectSpan = new SpaceSpan[] { null, null, null, null };
                         spaceSpanList.Add(spaceSpan);
                     }
                 }
 
-                spaceSpanDict[item.Key] = spaceSpanList;
+                spaceSpanDict[item.Key] = cellSpaceSpans;
             }
         }
 
@@ -127,6 +153,7 @@ namespace Geometry_Algorithm
         /// </summary>
         void CreateSpansConnectRelation()
         {
+            CellSpaceSpans cellSpaceSpans;
             List<SpaceSpan> spaceSpanList;
             List<SpaceSpan> neiSpaceList;
             SpaceSpan span;
@@ -140,14 +167,15 @@ namespace Geometry_Algorithm
             foreach (var item in spaceSpanDict)
             {
                 spanIdx = GetCellIdxs(item.Key);
-                spaceSpanList = item.Value;
+                cellSpaceSpans = item.Value;
+                spaceSpanList = cellSpaceSpans.spaceSpanList;
 
                 //neiDirIdx以当前span为中心,按左手顺时针: 0←  1↑  2→  3↓
                 for (int neiDirIdx = 0; neiDirIdx < 4; neiDirIdx++)
                 {          
                     neiKey = GetNeiKey(spanIdx, neiDirIdx);
                     if (neiKey != -1)
-                        neiSpaceList = spaceSpanDict[neiKey];
+                        neiSpaceList = spaceSpanDict[neiKey].spaceSpanList;
                     else
                         neiSpaceList = null;
 
@@ -279,7 +307,7 @@ namespace Geometry_Algorithm
             int key = GetKey(spanCellX, spanCellZ);
 
             //获取当前floor cell单元上的span链
-            List<SpaceSpan> spaceSpanList = spaceSpanDict[key];
+            List<SpaceSpan> spaceSpanList = spaceSpanDict[key].spaceSpanList;
             SpaceSpan span, neiSpan;
 
             for(int i=0; i<spaceSpanList.Count; i++)
@@ -303,6 +331,38 @@ namespace Geometry_Algorithm
                 }
             }
         }
+
+        void TraverseRegion(SpaceSpan span, int region)
+        {
+            SpaceSpan neiSpan;
+            List<SpaceSpan> tmp;
+            List<SpaceSpan> frontSpanlist = new List<SpaceSpan>(200);
+            List<SpaceSpan> backSpanlist = new List<SpaceSpan>(200);
+
+            for (int i = 0; i < frontSpanlist.Count; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    neiSpan = frontSpanlist[i].connectSpan[j];
+
+                    if (neiSpan == null ||
+                        neiSpan.region != -1 ||
+                        neiSpan.type == 1)
+                        continue;
+
+                    neiSpan.region = region;
+                    backSpanlist.Add(neiSpan);
+                }
+
+                tmp = frontSpanlist;
+                frontSpanlist = backSpanlist;
+                backSpanlist = tmp;
+                backSpanlist.Clear();
+            }
+
+        }
+
+
         
         int GetRelativeDir(int dir)
         {

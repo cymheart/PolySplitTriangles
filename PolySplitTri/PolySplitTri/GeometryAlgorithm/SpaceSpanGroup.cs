@@ -13,24 +13,29 @@ namespace Geometry_Algorithm
     /// </summary>
     public class SpaceSpan
     {
-        public double startPos;
-        public double endPos;
+        public double startPos = 0;
+        public double endPos = 0;
 
         /// <summary>
         /// 0:可通行
         /// 1:不可通行
         /// </summary>
-        public int type;
+        public int type = 0;
 
         /// <summary>
         /// 所属区域编号
         /// </summary>
-        public int region;
+        public int region = 0;
+
+        /// <summary>
+        /// 是否为边缘
+        /// </summary>
+        public bool isEdge = false;
 
         /// <summary>
         /// 指向所属单元spaceSpans
         /// </summary>
-        public CellSpaceSpans cellSpaceSpans;
+        public CellSpaceSpans cellSpaceSpans = null;
 
         /// <summary>
         /// 连通区域
@@ -332,26 +337,70 @@ namespace Geometry_Algorithm
             }
         }
 
-        void TraverseRegion(SpaceSpan span, int region)
+        void SplitRegions()
         {
-            SpaceSpan neiSpan;
+            CellSpaceSpans cellSpaceSpans;
+            List<SpaceSpan> spaceSpanList;
+            SpaceSpan span;
+            int region = 1;
+
+            foreach (var item in spaceSpanDict)
+            {
+                cellSpaceSpans = item.Value;
+                spaceSpanList = cellSpaceSpans.spaceSpanList;
+
+                for (int i = 0; i < spaceSpanList.Count; i++)
+                {
+                    span = spaceSpanList[i];
+                    if (span.region > 0)
+                        continue;
+
+                    SplitOneRegion(span, region);
+                    region++;
+                }
+            }
+        }
+
+
+
+
+        void SplitOneRegion(SpaceSpan startSpan, int region)
+        {
+            SpaceSpan centerSpan, connectSpan;
             List<SpaceSpan> tmp;
             List<SpaceSpan> frontSpanlist = new List<SpaceSpan>(200);
             List<SpaceSpan> backSpanlist = new List<SpaceSpan>(200);
+            frontSpanlist.Add(startSpan);
 
-            for (int i = 0; i < frontSpanlist.Count; i++)
+            while (frontSpanlist.Count > 0)
             {
-                for (int j = 0; j < 4; j++)
+                for (int i = 0; i < frontSpanlist.Count; i++)
                 {
-                    neiSpan = frontSpanlist[i].connectSpan[j];
+                    centerSpan = frontSpanlist[i];
+                    centerSpan.isEdge = false;
 
-                    if (neiSpan == null ||
-                        neiSpan.region != -1 ||
-                        neiSpan.type == 1)
-                        continue;
+                    for (int j = 0; j < 4; j++)
+                    {
+                        connectSpan = centerSpan.connectSpan[j];
 
-                    neiSpan.region = region;
-                    backSpanlist.Add(neiSpan);
+                        if (connectSpan == null ||
+                            connectSpan.region > 0 ||
+                            connectSpan.type == 1)
+                        {
+                            centerSpan.isEdge = true;
+                            continue;
+                        }
+
+                        if (connectSpan.cellSpaceSpans.region == region)
+                        {
+                            centerSpan.isEdge = true;
+                            continue;
+                        }
+
+                        connectSpan.region = region;
+
+                        backSpanlist.Add(connectSpan);
+                    }
                 }
 
                 tmp = frontSpanlist;
@@ -359,11 +408,77 @@ namespace Geometry_Algorithm
                 backSpanlist = tmp;
                 backSpanlist.Clear();
             }
-
         }
 
 
-        
+
+        //int SplitRegions(SpaceSpan startSpan, int region)
+        //{
+        //    SpaceSpan centerSpan, connectSpan;
+        //    List<SpaceSpan> tmp;
+        //    List<SpaceSpan> frontSpanlist = new List<SpaceSpan>(200);
+        //    List<SpaceSpan> backSpanlist = new List<SpaceSpan>(200);
+        //    List<SpaceSpan> newRegionSpan = new List<SpaceSpan>(200);
+
+        //    newRegionSpan.Add(startSpan);
+
+        //    for (int n = 0; n < newRegionSpan.Count; n++)
+        //    {
+        //        if (newRegionSpan[n].region != 0)
+        //            continue;
+
+        //        region++;
+        //        frontSpanlist.Clear();
+        //        frontSpanlist.Add(newRegionSpan[n]);
+
+        //        while (frontSpanlist.Count > 0)
+        //        {
+        //            for (int i = 0; i < frontSpanlist.Count; i++)
+        //            {
+        //                centerSpan = frontSpanlist[i];
+        //                centerSpan.isEdge = false;
+
+        //                for (int j = 0; j < 4; j++)
+        //                {
+        //                    connectSpan = centerSpan.connectSpan[j];
+
+        //                    if (connectSpan == null ||
+        //                        connectSpan.region > 0 ||
+        //                        connectSpan.type == 1)
+        //                    {
+        //                        centerSpan.isEdge = true;
+        //                        continue;
+        //                    }
+
+        //                    if (connectSpan.cellSpaceSpans.region == region)
+        //                    {
+        //                        centerSpan.isEdge = true;
+
+        //                        if (connectSpan.region != 0)
+        //                        {
+        //                            connectSpan.region = 0;
+        //                            newRegionSpan.Add(connectSpan);
+        //                        }
+        //                        continue;
+        //                    }
+
+        //                    connectSpan.region = region;
+
+        //                    backSpanlist.Add(connectSpan);
+        //                }
+        //            }
+
+        //            tmp = frontSpanlist;
+        //            frontSpanlist = backSpanlist;
+        //            backSpanlist = tmp;
+        //            backSpanlist.Clear();
+        //        }
+        //    }
+
+        //    return region;
+        //}
+
+
         int GetRelativeDir(int dir)
         {
             return relativeDirMap[dir];

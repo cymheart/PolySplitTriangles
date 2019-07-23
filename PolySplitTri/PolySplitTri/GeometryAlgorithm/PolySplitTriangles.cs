@@ -96,7 +96,7 @@ namespace Geometry_Algorithm
 
         LinkedListNode<Vector3d>[] GetLimitShortSideTri(LinkedList<LinkedListNode<Vector3d>[]> triList)
         {
-            if (triList == null)
+            if (triList == null || triList.Count == 0)
                 return null;
 
             LinkedListNode<Vector3d>[] triNodes;

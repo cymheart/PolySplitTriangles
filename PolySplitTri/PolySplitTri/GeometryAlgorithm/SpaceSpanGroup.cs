@@ -62,8 +62,14 @@ namespace Geometry_Algorithm
             return count;
         }
 
-
         public void CreateSpaceSpanGroup(SolidSpanGroup solidSpanGroup)
+        {
+            _CreateSpaceSpanGroup(solidSpanGroup);
+            CreateSpansConnectRelation();
+        }
+
+
+        public void _CreateSpaceSpanGroup(SolidSpanGroup solidSpanGroup)
         {
             Dictionary<int, LinkedList<SolidSpan>> soildSpanDict = solidSpanGroup.soildSpanDict;
             LinkedList<SolidSpan> solidSpanList;

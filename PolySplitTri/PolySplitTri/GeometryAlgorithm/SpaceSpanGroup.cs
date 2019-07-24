@@ -386,6 +386,7 @@ namespace Geometry_Algorithm
                         {
                             centerSpan.isEdge = true;
                             continue;
+
                         }
 
                         if (connectSpan.cellSpaceSpans.region == region)
